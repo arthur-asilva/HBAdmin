@@ -1,0 +1,6 @@
+.services-grid{
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+.check-group{ margin: 3px !important; }
