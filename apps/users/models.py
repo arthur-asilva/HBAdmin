@@ -1,5 +1,11 @@
 from django.db import models
 from django.utils import timezone
+import random
+import string
+
+
+
+
 
 class User(models.Model):
 
@@ -34,6 +40,38 @@ class Administrator(User):
 class Teacher(User):
     skills = models.JSONField(default={})
 
+    @classmethod
+    def create(cls, request):
+
+        data = {
+            'name': request['name'],
+            'email': request['email'],
+            'password': get_random_string(6),
+            'access_group': 'Professor',
+            'skills': {'services': request.getlist('services')},
+            'is_active': request.get('is_active', None) is not None
+        }
+        
+        cls.objects.create(**data)
+
+    @classmethod
+    def update(cls, id, request):
+
+        data = {
+            'name': request['name'],
+            'email': request['email'],
+            'skills': {'services': request.getlist('services')},
+            'is_active': request.get('is_active', None) is not None
+        }
+        
+        cls.objects.filter(id=id).update(**data)
+
     def __str__(self):
         return self.name
 
+
+
+def get_random_string(length):
+    letters = string.ascii_uppercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str

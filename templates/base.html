@@ -62,18 +62,34 @@
                         </a>
 
 						<ul class="pcoded-submenu">
-							<li><a href="bc_alert.html">Clientes</a></li>
+							<li><a href="{% url 'clients_view' %}">Clientes</a></li>
                             <li><a href="bc_alert.html">Turmas</a></li>
 						</ul>
 					</li>
 
+                    <li class="nav-item pcoded-hasmenu">
+
+						<a href="#!" class="nav-link ">
+                            <span class="pcoded-micon">
+                                <i class="feather icon-users"></i>
+                            </span>
+                            <span class="pcoded-mtext">Usuários</span>
+                        </a>
+
+						<ul class="pcoded-submenu">
+							<li><a href="{% url 'teachers_view' %}">Professores</a></li>
+                            <li><a href="bc_alert.html">Alunos</a></li>
+						</ul>
+					</li>
+
+                    <!-- LINK WITHOUT DROPDOWN
                     <li class="nav-item">
                         <a href="sample-page.html" class="nav-link ">
                             <span class="pcoded-micon"><i class="feather icon-briefcase"></i></span>
                             <span class="pcoded-mtext">Professores</span>
                         </a>
                     </li>
-
+                    -->
 				</ul>
 				
 			</div>
@@ -86,11 +102,13 @@
 			
 				<div class="m-header">
 					<a class="mobile-menu" id="mobile-collapse" href="#!"><span></span></a>
+                    <h4 class="text-white">Healthy Body</h4>
+                    <!--
 					<a href="#!" class="b-brand">
-						<!-- ========   change your logo hear   ============ -->
 						<img src="{% static 'assets/images/logo.png' %}" alt="" class="logo">
 						<img src="{% static 'assets/images/logo-icon.png' %}" alt="" class="logo-thumb">
 					</a>
+                    -->
 					<a href="#!" class="mob-toggler">
 						<i class="feather icon-more-vertical"></i>
 					</a>
@@ -113,9 +131,7 @@
 										</a>
 									</div>
 									<ul class="pro-body">
-										<li><a href="user-profile.html" class="dropdown-item"><i class="feather icon-user"></i> Profile</a></li>
-										<li><a href="email_inbox.html" class="dropdown-item"><i class="feather icon-mail"></i> My Messages</a></li>
-										<li><a href="auth-signin.html" class="dropdown-item"><i class="feather icon-lock"></i> Lock Screen</a></li>
+										<li><a href="user-profile.html" class="dropdown-item"><i class="feather icon-lock"></i> Mudar senha</a></li>
 									</ul>
 								</div>
 							</div>
