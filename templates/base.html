@@ -1,4 +1,5 @@
 {% load static %}
+{% load template_tags %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,6 +28,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 
 </head>
+{% logged_user as user %}
 <body class="">
 	<!-- [ Pre-loader ] start -->
 	<div class="loader-bg">
@@ -42,10 +44,10 @@
 				
 				<div class="">
 					<div class="main-menu-header">
-						<img class="img-radius" src="{% static 'assets/images/user/avatar-2.jpg' %}" alt="User-Profile-Image">
+						<!-- <img class="img-radius" src="{% static 'assets/images/user/avatar-2.jpg' %}" alt="User-Profile-Image"> -->
 						<div class="user-details">
-							<span>John Doe</span>
-							<div>UX Designer</div>
+							<span>{{ user.name }}</span>
+							<div class="text-sm">{{ user.email }}</div>
 						</div>
 					</div>
 				</div>
@@ -63,7 +65,7 @@
 
 						<ul class="pcoded-submenu">
 							<li><a href="{% url 'clients_view' %}">Clientes</a></li>
-                            <li><a href="bc_alert.html">Turmas</a></li>
+                            <li><a href="#">Turmas</a></li>
 						</ul>
 					</li>
 
@@ -131,7 +133,7 @@
 										</a>
 									</div>
 									<ul class="pro-body">
-										<li><a href="user-profile.html" class="dropdown-item"><i class="feather icon-lock"></i> Mudar senha</a></li>
+										<li><a href="#" class="dropdown-item"><i class="feather icon-lock"></i> Mudar senha</a></li>
 									</ul>
 								</div>
 							</div>

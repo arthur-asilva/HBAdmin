@@ -20,6 +20,7 @@ def HomeView(request):
         
         if user.exists():
             request.session['auth'] = json.dumps(user.first())
+            return redirect('../clients/')
         else:
             print('user not found')
 
