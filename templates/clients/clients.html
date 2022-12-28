@@ -86,6 +86,9 @@
                                                 <input type="checkbox" {% if edit_client and not client.is_active %}{% else %}checked{% endif %} name="is_active" class="custom-control-input" id="customswitch1">
                                                 <label class="custom-control-label" for="customswitch1">Ativo</label>
                                             </div>
+                                            {% if edit_client %}
+                                                <a class="text-danger" style="margin-right: 30px" href="{% url 'clients_view' %}">Cancelar</a>
+                                            {% endif %}
                                             <button type="submit" class="btn btn-primary">Adicionar</button>
                                         </form>
                                     </div>
