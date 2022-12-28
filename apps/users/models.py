@@ -32,6 +32,31 @@ class User(models.Model):
 
 
 class Administrator(User):
+
+    @classmethod
+    def create(cls, request):
+
+        data = {
+            'name': request['name'],
+            'email': request['email'],
+            'password': get_random_string(6),
+            'access_group': 'Administrador',
+            'is_active': request.get('is_active', None) is not None
+        }
+        
+        cls.objects.create(**data)
+
+    @classmethod
+    def update(cls, id, request):
+
+        data = {
+            'name': request['name'],
+            'email': request['email'],
+            'is_active': request.get('is_active', None) is not None
+        }
+        
+        cls.objects.filter(id=id).update(**data)
+
     def __str__(self):
         return self.name
 
