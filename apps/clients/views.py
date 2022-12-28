@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
+from apps.users.auth_wrapper import logged
 from .models import Service, Client, Classes
 from apps.users.models import Teacher
 
+@logged
 def ClientsView(request):
 
     edit_client = request.GET.get('c', False)
@@ -30,6 +32,7 @@ def ClientsView(request):
 
 
 
+@logged
 def ClassesView(request):
     edit_class = request.GET.get('c', False)
     current_class = None

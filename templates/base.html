@@ -79,8 +79,9 @@
                         </a>
 
 						<ul class="pcoded-submenu">
+                            <li><a href="{% url 'administrators_view' %}">Administradores</a></li>
 							<li><a href="{% url 'teachers_view' %}">Professores</a></li>
-                            <li><a href="bc_alert.html">Alunos</a></li>
+                            <li><a href="#">Alunos</a></li>
 						</ul>
 					</li>
 
@@ -128,12 +129,12 @@
 									<div class="pro-head">
 										<img src="{% static 'assets/images/user/avatar-1.jpg' %}" class="img-radius" alt="User-Profile-Image">
 										<span>{{ user.name }}</span>
-										<a href="auth-signin.html" class="dud-logout" title="Logout">
+										<a href="{% url 'logout_view' %}" class="dud-logout" title="Logout">
 											<i class="feather icon-log-out"></i>
 										</a>
 									</div>
 									<ul class="pro-body">
-										<li><a href="#" class="dropdown-item"><i class="feather icon-lock"></i> Mudar senha</a></li>
+										<li><a href="{% url 'changepassword_view' %}" class="dropdown-item"><i class="feather icon-lock"></i> Mudar senha</a></li>
 									</ul>
 								</div>
 							</div>
