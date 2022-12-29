@@ -1,1 +1,2 @@
 apps/utils/private_data.py
+db.sqlite3
