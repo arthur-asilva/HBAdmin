@@ -109,3 +109,10 @@ def ChangePasswordView(request):
         
 
     return render(request, 'users/change_password.html')
+
+
+
+
+@logged
+def StudentsView(request):
+    return render(request, 'users/students.html')
