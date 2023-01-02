@@ -1,5 +1,5 @@
 from django.db import models
-from apps.users.models import Teacher
+import apps.users.models as UserModels
 
 
 
@@ -56,7 +56,7 @@ class Classes(models.Model):
     client = models.ForeignKey(Client, related_name='client', on_delete=models.PROTECT)
     schedule = models.CharField(max_length=5)
     weekday = models.IntegerField(choices=WEEKDAY_CHOICES)
-    teacher = models.ForeignKey(Teacher, related_name='teacher', on_delete=models.PROTECT)
+    teacher = models.ForeignKey(UserModels.Teacher, related_name='teacher', on_delete=models.PROTECT)
     service = models.CharField(max_length=250)
     is_active = models.BooleanField(default=True)
 
