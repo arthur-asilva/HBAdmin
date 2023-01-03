@@ -1,6 +1,11 @@
 from django.db import models
 from django.utils import timezone
 from apps.clients.models import Classes
+
+from django.template import Context
+from django.template.loader import render_to_string, get_template
+from django.core.mail import EmailMessage
+
 import random
 import string
 
@@ -42,11 +47,12 @@ class Administrator(User):
             'name': request['name'],
             'email': request['email'],
             'password': get_random_string(6),
-            'access_group': 'Administrador',
+            'access_group': 'ADM',
             'is_active': request.get('is_active', None) is not None
         }
         
         cls.objects.create(**data)
+        sendmail(data)
 
     @classmethod
     def update(cls, id, request):
@@ -76,12 +82,13 @@ class Teacher(User):
             'name': request['name'],
             'email': request['email'],
             'password': get_random_string(6),
-            'access_group': 'Professor',
+            'access_group': 'PROF',
             'skills': {'services': request.getlist('services')},
             'is_active': request.get('is_active', None) is not None
         }
         
         cls.objects.create(**data)
+        sendmail(data)
 
     @classmethod
     def update(cls, id, request):
@@ -111,38 +118,81 @@ def get_random_string(length):
 
 
 
-# class Student(User):
-#     height = models.DecimalField(max_digits=3, decimal_places=2)
-#     mass = models.DecimalField(max_digits=5, decimal_places=2)
-#     workout_tips = models.JSONField(default={})
-#     born_date = models.DateField(null=True, blank=True)
-#     last_access = models.DateField(default=timezone.now())
+class Student(User):
+    height = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    mass = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    workout_tips = models.JSONField(default={})
+    born_date = models.DateField(null=True, blank=True)
+    last_access = models.DateField(default=timezone.now())
 
-#     def __str__(self):
-#         return self.name
+    @classmethod
+    def create(cls, request):
+
+        data = {
+            'name': request['name'],
+            'email': request['email'],
+            'password': get_random_string(6),
+            'access_group': 'ALU',
+            'is_active': request.get('is_active', None) is not None
+        }
+
+        cls.objects.create(**data)
+        sendmail(data)
+
+    @classmethod
+    def update(cls, id, request):
+
+        data = {
+            'name': request['name'],
+            'email': request['email'],
+            'is_active': request.get('is_active', None) is not None
+        }
+        
+        cls.objects.filter(id=id).update(**data)
+
+    def __str__(self):
+        return self.name
 
 
 
 
 
-# class Enrollment(models.Model):
-#     student = models.ForeignKey(Student, related_name='student', on_delete=models.PROTECT)
-#     enrollment_class = models.ForeignKey(Classes, related_name='class', on_delete=models.PROTECT)
-#     is_active = models.BooleanField(default=True)
+class Enrollment(models.Model):
+    student = models.ForeignKey(Student, related_name='student', on_delete=models.PROTECT)
+    enrollment_class = models.ForeignKey(Classes, related_name='enrollment_class', on_delete=models.PROTECT)
+    is_active = models.BooleanField(default=True)
 
 
 
 
 
-# class AttendenceList(models.Model):
+class AttendenceList(models.Model):
 
-#     ATTENDANCE_STATUS = [
-#         (0, 'Present'),
-#         (1, 'Absent'),
-#         (2, 'Justificado'),
-#         (3, 'Reagendado')
-#     ]
+    ATTENDANCE_STATUS = [
+        (0, 'Present'),
+        (1, 'Absent'),
+        (2, 'Justificado'),
+        (3, 'Reagendado')
+    ]
 
-#     enrollment = models.ForeignKey(Enrollment, related_name='enrollment', on_delete=models.PROTECT)
-#     date = models.DateField(default=timezone.now())
-#     status = models.IntegerField(choices=ATTENDANCE_STATUS)
+    enrollment = models.ForeignKey(Enrollment, related_name='enrollment', on_delete=models.PROTECT)
+    date = models.DateField(default=timezone.now())
+    status = models.IntegerField(choices=ATTENDANCE_STATUS)
+
+
+
+
+
+def sendmail(user):
+    
+    ctx = {
+        'name': user['name'],
+        'password': user['password']
+    }
+
+    message = get_template('users/on_create_email.html').render(ctx)
+    msg = EmailMessage('Subject', message, 'icaro.arthur66@gmail.com', [user['email']])
+    msg.content_subtype ="html"
+    msg.send()
+
+    print("Mail successfully sent")

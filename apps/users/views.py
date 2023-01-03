@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Administrator, Teacher
+from .models import Administrator, Teacher, Student
 from .auth_wrapper import logged
 from apps.clients.models import Service
 from django.conf import settings
@@ -115,4 +115,26 @@ def ChangePasswordView(request):
 
 @logged
 def StudentsView(request):
-    return render(request, 'users/students.html')
+
+    student = request.GET.get('s', None)
+    edit_student = False
+
+    if student is not None:
+        student = Student.objects.get(id=student)
+        edit_student = True
+
+    data = {
+        'students': Student.objects.all(),
+        'student': student,
+        'edit_student': edit_student
+    }
+
+    if request.method == 'POST':
+        request_data = request.POST.copy()
+        if edit_student:
+            Student.update(student.id, request_data)
+            return redirect('../students/')
+        else:
+            Student.create(request_data)
+
+    return render(request, 'users/students.html', data)
