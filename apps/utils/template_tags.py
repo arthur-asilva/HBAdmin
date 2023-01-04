@@ -1,5 +1,4 @@
 from django import template
-from apps.users.models import Administrator
 import json
 
 register = template.Library()
@@ -8,4 +7,9 @@ register = template.Library()
 def logged_user(context):
     request = context['request']
     return json.loads(request.session['auth'])
-    
+
+
+@register.filter
+def intToWeekday(value):
+    weekdays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo']
+    return weekdays[value]

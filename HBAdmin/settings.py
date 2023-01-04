@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+from apps.utils.private_data import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,6 +28,11 @@ SECRET_KEY = 'django-insecure-2^%bjxc7_g@-q(lkv7&1#&q2pj8ra0guec3fh8y7y7-f3cryd6
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+
+CURRENT_HOST = 'http://localhost:8000'
+
+if DEBUG is False:
+    CURRENT_HOST = 'http://ec2-184-72-204-96.compute-1.amazonaws.com'
 
 
 # Application definition

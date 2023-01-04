@@ -7,28 +7,28 @@
     <!-- [ Main Content ] start -->
     <div class="row">
         <div class="col-sm-12">
-            <h3 class="mb-3">Controle de clientes</h3>
+            <h3 class="mb-3">Controle de alunos</h3>
             <div class="card">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-2 col-sm-12">
                             <ul class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                                 <li>
-                                    <a class="nav-link text-left {% if not edit_client %}active{% endif %}" id="v-pills-search-tab" data-toggle="pill" href="#v-pills-search" role="tab" aria-controls="v-pills-search" aria-selected="{% if edit_client %}false{% else %}true{% endif %}">
+                                    <a class="nav-link text-left {% if not edit_student %}active{% endif %}" id="v-pills-search-tab" data-toggle="pill" href="#v-pills-search" role="tab" aria-controls="v-pills-search" aria-selected="{% if edit_student %}false{% else %}true{% endif %}">
                                         Pesquisa
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="nav-link text-left {% if edit_client %}active{% endif %}" id="v-pills-manage-tab" data-toggle="pill" href="#v-pills-manage" role="tab" aria-controls="v-pills-manage" aria-selected="{% if edit_client %}true{% else %}false{% endif %}">
-                                        {% if edit_client %}Edição{% else %}Cadastro{% endif %}        
+                                    <a class="nav-link text-left {% if edit_student %}active{% endif %}" id="v-pills-manage-tab" data-toggle="pill" href="#v-pills-manage" role="tab" aria-controls="v-pills-manage" aria-selected="{% if edit_student %}true{% else %}false{% endif %}">
+                                        {% if edit_student %}Edição{% else %}Cadastro{% endif %}        
                                     </a>
                                 </li>
                             </ul>
                         </div>
                         <div class="col-md-10 col-sm-12">
                             <div class="tab-content" id="v-pills-tabContent">
-                                <div class="tab-pane fade {% if not edit_client %}show active{% endif %}" id="v-pills-search" role="tabpanel" aria-labelledby="v-pills-search-tab">
-                                    <h2>Condomínios</h2>
+                                <div class="tab-pane fade {% if not edit_student %}show active{% endif %}" id="v-pills-search" role="tabpanel" aria-labelledby="v-pills-search-tab">
+                                    <h2>Alunos</h2>
                                     <input class="form-control mb-3" id="SearchInput" type="text" placeholder="Procurar...">
                                     <table class="table table-bordered table-striped">
                                         <thead>
@@ -38,58 +38,50 @@
                                             <th class="text-center">Editar</th>
                                         </tr>
                                         </thead>
-                                        <tbody id="TeachersTable">
-                                            {% for client in clients %}
+                                        <tbody id="ClientsTable">
+                                            {% for student in students %}
                                                 <tr>
-                                                    <td>{{client.name}}</td>
+                                                    <td>{{student.name}}</td>
                                                     <td class="text-center">
-                                                        {% if client.is_active %}
+                                                        {% if student.is_active %}
                                                             <i class="feather icon-check-circle text-success"></i>
                                                         {% else %}
                                                             <i class="feather icon-slash text-danger"></i>
                                                         {% endif %}
                                                     </td>
                                                     <td class="text-center">
-                                                        <a href="{% url 'clients_view' %}?c={{client.id}}"><i class="feather icon-edit text-info"></i></a>
+                                                        <a href="{% url 'students_view' %}?s={{student.id}}"><i class="feather icon-edit text-info"></i></a>
                                                     </td>
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="tab-pane fade {% if edit_client %}show active{% endif %}" id="v-pills-manage" role="tabpanel" aria-labelledby="v-pills-manage-tab">
+                                <div class="tab-pane fade {% if edit_student %}show active{% endif %}" id="v-pills-manage" role="tabpanel" aria-labelledby="v-pills-manage-tab">
                                     <div class="col-md-12">
                                         <form method="post">
                                             {% csrf_token %}
                                             <div class="form-group">
                                                 <label for="InputName">Nome</label>
-                                                <input type="text" required class="form-control" name="name" id="InputName" placeholder="Nome do condomínio" value="{{client.name}}">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="InputAddress">Endereço</label>
-                                                <input type="text" required class="form-control" name="address" id="InputAddress" placeholder="Rua, nº - Bairro, Cidade - Estado, CEP" value="{{client.address}}">
+                                                <input type="text" required class="form-control" name="name" id="InputName" placeholder="Nome do aluno" value="{{student.name}}">
                                             </div>
 
                                             <div class="form-group">
-                                                <h5 class="mb-3">Especialidades</h5>
-                                                <div class="col-md-12 services-grid mb-3">
-                                                    {% for service in services %}
-                                                        <div class="form-group form-check check-group">
-                                                            <input type="checkbox" name="services" {% if edit_client and service.name in client.services.services %}checked{% endif %} value="{{service.name}}" class="form-check-input" id="Check{{service.id}}">
-                                                            <label class="form-check-label" for="Check{{service.id}}">{{service.name}}</label>
-                                                        </div>
-                                                    {% endfor %}
-                                                </div>
+                                                <label for="InputEmail">E-mail</label>
+                                                <input type="text" required class="form-control" name="email" id="InputEmail" placeholder="E-mail do aluno" value="{{student.email}}">
                                             </div>
 
                                             <div class="custom-control custom-switch mb-3">
-                                                <input type="checkbox" {% if edit_client and not client.is_active %}{% else %}checked{% endif %} name="is_active" class="custom-control-input" id="customswitch1">
+                                                <input type="checkbox" {% if edit_student and not student.is_active %}{% else %}checked{% endif %} name="is_active" class="custom-control-input" id="customswitch1">
                                                 <label class="custom-control-label" for="customswitch1">Ativo</label>
                                             </div>
-                                            {% if edit_client %}
-                                                <a class="text-danger" style="margin-right: 30px" href="{% url 'clients_view' %}">Cancelar</a>
+
+                                            {% if edit_student %}
+                                                <a class="text-danger" style="margin-right: 30px" href="{% url 'students_view' %}">Cancelar</a>
                                             {% endif %}
+
                                             <button type="submit" class="btn btn-primary">Adicionar</button>
+                                            
                                         </form>
                                     </div>
                                 </div>
@@ -106,7 +98,7 @@
 $(document).ready(function(){
     $("#SearchInput").on("keyup", function() {
         var value = $(this).val().toLowerCase();
-        $("#TeachersTable tr").filter(function() {
+        $("#ClientsTable tr").filter(function() {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });

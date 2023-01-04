@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from .models import Administrator, Teacher
+from .models import Administrator, Teacher, Student
 from .auth_wrapper import logged
 from apps.clients.models import Service
+from django.conf import settings
 import json
 
 
@@ -26,8 +27,15 @@ def HomeView(request):
 
     return render(request, 'home.html')
 
+@logged
+def LogoutView(request):
+    is_logged = request.session.get('auth', None)
+    if is_logged is not None:
+        request.session.pop('auth')
+    return redirect('../')
 
 
+@logged
 def TeachersView(request):
 
     teacher = request.GET.get('t', None)
@@ -54,3 +62,79 @@ def TeachersView(request):
             Teacher.create(request_data)
 
     return render(request, 'users/teachers.html', data)
+
+
+@logged
+def AdminstratorsView(request):
+
+    admin = request.GET.get('u', None)
+    edit_admin = False
+
+    if admin is not None:
+        admin = Administrator.objects.get(id=admin)
+        edit_admin = True
+
+    data = {
+        'administrators': Administrator.objects.all(),
+        'services': Service.objects.all(),
+        'administrator': admin,
+        'edit_admin': edit_admin
+    }
+
+    if request.method == 'POST':
+        request_data = request.POST.copy()
+        if edit_admin:
+            Administrator.update(admin.id, request_data)
+            return redirect('../administrators/')
+        else:
+            Administrator.create(request_data)
+
+    return render(request, 'users/administrators.html', data)
+
+
+
+
+@logged
+def ChangePasswordView(request):
+
+    if request.method == 'POST':
+        
+        current_user = json.loads(request.session['auth'])
+        current_user = Administrator.objects.get(id=current_user['id'])
+        
+        if current_user.password == request.POST['current_pass']:
+            current_user.password = request.POST['new_pass']
+            current_user.save()
+            return redirect(settings.CURRENT_HOST)
+        
+
+    return render(request, 'users/change_password.html')
+
+
+
+
+@logged
+def StudentsView(request):
+
+    student = request.GET.get('s', None)
+    edit_student = False
+
+    if student is not None:
+        student = Student.objects.get(id=student)
+        edit_student = True
+
+    data = {
+        'students': Student.objects.all(),
+        'student': student,
+        'edit_student': edit_student
+    }
+
+    if request.method == 'POST':
+        request_data = request.POST.copy()
+        if edit_student:
+            Student.update(student.id, request_data)
+            return redirect('../students/')
+        else:
+            Student.create(request_data)
+
+    return render(request, 'users/students.html', data)

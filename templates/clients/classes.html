@@ -1,0 +1,212 @@
+{% extends '../base.html' %}
+{% load static %}
+{% load template_tags %}
+{% block main %}
+
+<div class="pcoded-content">
+    
+    <!-- [ Main Content ] start -->
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="mb-3">Controle de turmas</h3>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2 col-sm-12">
+                            <ul class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                <li>
+                                    <a class="nav-link text-left {% if not edit_class %}active{% endif %}" id="v-pills-search-tab" data-toggle="pill" href="#v-pills-search" role="tab" aria-controls="v-pills-search" aria-selected="{% if edit_class %}false{% else %}true{% endif %}">
+                                        Pesquisa
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link text-left {% if edit_class and not is_enrolling %}active{% endif %}" id="v-pills-manage-tab" data-toggle="pill" href="#v-pills-manage" role="tab" aria-controls="v-pills-manage" aria-selected="{% if edit_class %}true{% else %}false{% endif %}">
+                                        {% if edit_class and not is_enrolling %}Edição{% else %}Cadastro{% endif %}        
+                                    </a>
+                                </li>
+                                {% if edit_class %}
+                                    <li>
+                                        <a class="nav-link text-left {% if edit_class and is_enrolling %}active{% endif %}" id="v-pills-enroll-tab" data-toggle="pill" href="#v-pills-enroll" role="tab" aria-controls="v-pills-enroll" aria-selected="false">
+                                            Matricular     
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div class="col-md-10 col-sm-12">
+                            <div class="tab-content" id="v-pills-tabContent">
+                                <div class="tab-pane fade {% if not edit_class %}show active{% endif %}" id="v-pills-search" role="tabpanel" aria-labelledby="v-pills-search-tab">
+                                    <h2>Turmas</h2>
+                                    <input class="form-control mb-3" id="SearchClassInput" type="text" placeholder="Procurar...">
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Condomínio</th>
+                                            <th>Dia</th>
+                                            <th>Horário</th>
+                                            <th class="text-center">Status</th>
+                                            <th class="text-center">Editar</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="ClassTable">
+                                            {% for class in classes %}
+                                                <tr>
+                                                    <td>{{class.client.name}}</td>
+                                                    <th class="text-center">{{class.weekday|intToWeekday}}</th>
+                                                    <th class="text-center">{{class.schedule}}</th>
+                                                    <td class="text-center">
+                                                        {% if class.is_active %}
+                                                            <i class="feather icon-check-circle text-success"></i>
+                                                        {% else %}
+                                                            <i class="feather icon-slash text-danger"></i>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <a href="{% url 'classes_view' %}?c={{class.id}}"><i class="feather icon-edit text-info"></i></a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="tab-pane fade {% if edit_class and not is_enrolling %}show active{% endif %}" id="v-pills-manage" role="tabpanel" aria-labelledby="v-pills-manage-tab">
+                                    <div class="col-md-12">
+                                        <form method="post">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label for="ClientInput">Escolha o condomínio</label>
+                                                <select class="form-control" id="ClientInput" name="client">
+                                                    {% for client in clients %}
+                                                        <option {% if current_class.client.id == client.id %}selected{% endif %} value="{{client.id}}">{{client.name}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="ScheduleInput">Horário</label>
+                                                <input type="time" required class="form-control" name="schedule" id="ScheduleInput" placeholder="Horário da aula" value="{{current_class.schedule}}">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="WeekdayInput">Dia da aula</label>
+                                                <select class="form-control" id="WeekdayInput" name="weekday">
+                                                    {% for weekday_value in weekday_interval %}
+                                                        <option {% if current_class.weekday is weekday_value %}selected{% endif %} value="{{weekday_value}}">{{weekday_value|intToWeekday}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="TeacherInput">Escolha o professor</label>
+                                                <select class="form-control" id="TeacherInput" name="teacher">
+                                                    {% for teacher in teachers %}
+                                                        <option {% if current_class.teacher.id == teacher.id %}selected{% endif %} value="{{teacher.id}}">{{teacher.name}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="ServiceInput">Escolha o tipo de serviço</label>
+                                                <select class="form-control" id="ServiceInput" name="service">
+                                                    {% for service in services %}
+                                                        <option {% if current_class.service == service.name %}selected{% endif %}>{{service.name}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="PriceInput">Horário</label>
+                                                <input type="number" class="form-control" name="price" id="PriceInput" placeholder="Valor da hora/aula" value="{{current_class.price}}">
+                                            </div>
+
+                                            <div class="custom-control custom-switch mb-3">
+                                                <input type="checkbox" {% if edit_class and not current_class.is_active %}{% else %}checked{% endif %} name="is_active" class="custom-control-input" id="customswitch1">
+                                                <label class="custom-control-label" for="customswitch1">Ativo</label>
+                                            </div>
+
+                                            {% if edit_class %}
+                                                <a class="text-danger" style="margin-right: 30px" href="{% url 'classes_view' %}">Cancelar</a>
+                                            {% endif %}
+                                            <button type="submit" class="btn btn-primary">Adicionar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                {% if edit_class %}
+                                    <div class="tab-pane fade {% if is_enrolling %}show active{% endif %}" id="v-pills-enroll" role="tabpanel" aria-labelledby="v-pills-enroll-tab">
+                                        <div class="col-md-12">
+                                            <a class="btn btn-primary float-right" href="{% url 'enrollments_view' %}?c={{current_class.id}}">
+                                                <i class="feather icon-printer text-white"></i>
+                                            </a>
+                                            <form method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="student_id" />
+                                                <input type="hidden" name="class_id" value="{{current_class.id}}" />
+                                                <h2>Adicionar aluno em:</h2>
+                                                <h5>{{current_class.client.name}}, {{current_class.weekday|intToWeekday}} às {{current_class.schedule}}</h5>
+                                                <h5 class="mb-3">Professor: {{current_class.teacher.name}}</h5>
+                                                <input class="form-control mb-3" id="SearchStudentInput" type="text" placeholder="Procurar alunos...">
+                                                <table class="table table-bordered table-striped">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Nome do aluno</th>
+                                                        <th class="text-center">Adicionar/remover</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="StudentTable">
+                                                        {% for student in students %}
+                                                            <tr>
+                                                                <td>{{student.name}}</td>
+                                                                <td class="text-center">
+                                                                    <a href="#" onclick="selectStudent({{student.id}})">
+                                                                        <i class="feather icon-check-circle text-success"></i>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+
+                                                <div class="custom-control custom-switch mb-3">
+                                                    <input type="checkbox" {% if edit_class and not current_class.is_active %}{% else %}checked{% endif %} name="is_active" class="custom-control-input" id="customswitch1">
+                                                    <label class="custom-control-label" for="customswitch1">Ativo</label>
+                                                </div>
+
+                                                {% if edit_class %}
+                                                    <a class="text-danger" style="margin-right: 30px" href="{% url 'classes_view' %}">Cancelar</a>
+                                                {% endif %}
+                                                <button type="submit" class="btn btn-primary">Adicionar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ Main Content ] end -->
+</div>
+<script>
+$(document).ready(function(){
+    $("#SearchClassInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#ClassTable tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+    $("#SearchStudentInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#StudentTable tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+});
+const selectStudent = (id) => {
+    const selected_student = document.querySelector('input[name="student_id"]')
+    selected_student.value = Number(id)
+    console.log(selected_student.value)
+}
+</script>
+{% endblock main %}
