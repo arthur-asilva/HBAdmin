@@ -20,17 +20,24 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="nav-link text-left {% if edit_class %}active{% endif %}" id="v-pills-manage-tab" data-toggle="pill" href="#v-pills-manage" role="tab" aria-controls="v-pills-manage" aria-selected="{% if edit_class %}true{% else %}false{% endif %}">
-                                        {% if edit_class %}Edição{% else %}Cadastro{% endif %}        
+                                    <a class="nav-link text-left {% if edit_class and not is_enrolling %}active{% endif %}" id="v-pills-manage-tab" data-toggle="pill" href="#v-pills-manage" role="tab" aria-controls="v-pills-manage" aria-selected="{% if edit_class %}true{% else %}false{% endif %}">
+                                        {% if edit_class and not is_enrolling %}Edição{% else %}Cadastro{% endif %}        
                                     </a>
                                 </li>
+                                {% if edit_class %}
+                                    <li>
+                                        <a class="nav-link text-left {% if edit_class and is_enrolling %}active{% endif %}" id="v-pills-enroll-tab" data-toggle="pill" href="#v-pills-enroll" role="tab" aria-controls="v-pills-enroll" aria-selected="false">
+                                            Matricular     
+                                        </a>
+                                    </li>
+                                {% endif %}
                             </ul>
                         </div>
                         <div class="col-md-10 col-sm-12">
                             <div class="tab-content" id="v-pills-tabContent">
                                 <div class="tab-pane fade {% if not edit_class %}show active{% endif %}" id="v-pills-search" role="tabpanel" aria-labelledby="v-pills-search-tab">
                                     <h2>Turmas</h2>
-                                    <input class="form-control mb-3" id="SearchInput" type="text" placeholder="Procurar...">
+                                    <input class="form-control mb-3" id="SearchClassInput" type="text" placeholder="Procurar...">
                                     <table class="table table-bordered table-striped">
                                         <thead>
                                         <tr>
@@ -41,7 +48,7 @@
                                             <th class="text-center">Editar</th>
                                         </tr>
                                         </thead>
-                                        <tbody id="TeachersTable">
+                                        <tbody id="ClassTable">
                                             {% for class in classes %}
                                                 <tr>
                                                     <td>{{class.client.name}}</td>
@@ -62,7 +69,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="tab-pane fade {% if edit_class %}show active{% endif %}" id="v-pills-manage" role="tabpanel" aria-labelledby="v-pills-manage-tab">
+                                <div class="tab-pane fade {% if edit_class and not is_enrolling %}show active{% endif %}" id="v-pills-manage" role="tabpanel" aria-labelledby="v-pills-manage-tab">
                                     <div class="col-md-12">
                                         <form method="post">
                                             {% csrf_token %}
@@ -107,10 +114,16 @@
                                                 </select>
                                             </div>
 
+                                            <div class="form-group">
+                                                <label for="PriceInput">Horário</label>
+                                                <input type="number" class="form-control" name="price" id="PriceInput" placeholder="Valor da hora/aula" value="{{current_class.price}}">
+                                            </div>
+
                                             <div class="custom-control custom-switch mb-3">
                                                 <input type="checkbox" {% if edit_class and not current_class.is_active %}{% else %}checked{% endif %} name="is_active" class="custom-control-input" id="customswitch1">
                                                 <label class="custom-control-label" for="customswitch1">Ativo</label>
                                             </div>
+
                                             {% if edit_class %}
                                                 <a class="text-danger" style="margin-right: 30px" href="{% url 'classes_view' %}">Cancelar</a>
                                             {% endif %}
@@ -118,6 +131,54 @@
                                         </form>
                                     </div>
                                 </div>
+                                {% if edit_class %}
+                                    <div class="tab-pane fade {% if is_enrolling %}show active{% endif %}" id="v-pills-enroll" role="tabpanel" aria-labelledby="v-pills-enroll-tab">
+                                        <div class="col-md-12">
+                                            <a class="btn btn-primary float-right" href="{% url 'enrollments_view' %}?c={{current_class.id}}">
+                                                <i class="feather icon-printer text-white"></i>
+                                            </a>
+                                            <form method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="student_id" />
+                                                <input type="hidden" name="class_id" value="{{current_class.id}}" />
+                                                <h2>Adicionar aluno em:</h2>
+                                                <h5>{{current_class.client.name}}, {{current_class.weekday|intToWeekday}} às {{current_class.schedule}}</h5>
+                                                <h5 class="mb-3">Professor: {{current_class.teacher.name}}</h5>
+                                                <input class="form-control mb-3" id="SearchStudentInput" type="text" placeholder="Procurar alunos...">
+                                                <table class="table table-bordered table-striped">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Nome do aluno</th>
+                                                        <th class="text-center">Adicionar/remover</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="StudentTable">
+                                                        {% for student in students %}
+                                                            <tr>
+                                                                <td>{{student.name}}</td>
+                                                                <td class="text-center">
+                                                                    <a href="#" onclick="selectStudent({{student.id}})">
+                                                                        <i class="feather icon-check-circle text-success"></i>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+
+                                                <div class="custom-control custom-switch mb-3">
+                                                    <input type="checkbox" {% if edit_class and not current_class.is_active %}{% else %}checked{% endif %} name="is_active" class="custom-control-input" id="customswitch1">
+                                                    <label class="custom-control-label" for="customswitch1">Ativo</label>
+                                                </div>
+
+                                                {% if edit_class %}
+                                                    <a class="text-danger" style="margin-right: 30px" href="{% url 'classes_view' %}">Cancelar</a>
+                                                {% endif %}
+                                                <button type="submit" class="btn btn-primary">Adicionar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -129,12 +190,23 @@
 </div>
 <script>
 $(document).ready(function(){
-    $("#SearchInput").on("keyup", function() {
+    $("#SearchClassInput").on("keyup", function() {
         var value = $(this).val().toLowerCase();
-        $("#TeachersTable tr").filter(function() {
+        $("#ClassTable tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+    $("#SearchStudentInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#StudentTable tr").filter(function() {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
 });
+const selectStudent = (id) => {
+    const selected_student = document.querySelector('input[name="student_id"]')
+    selected_student.value = Number(id)
+    console.log(selected_student.value)
+}
 </script>
 {% endblock main %}

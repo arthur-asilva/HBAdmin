@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils import timezone
-from apps.clients.models import Classes
 
 from django.template import Context
 from django.template.loader import render_to_string, get_template
@@ -157,15 +156,6 @@ class Student(User):
 
 
 
-class Enrollment(models.Model):
-    student = models.ForeignKey(Student, related_name='student', on_delete=models.PROTECT)
-    enrollment_class = models.ForeignKey(Classes, related_name='enrollment_class', on_delete=models.PROTECT)
-    is_active = models.BooleanField(default=True)
-
-
-
-
-
 class AttendenceList(models.Model):
 
     ATTENDANCE_STATUS = [
@@ -175,7 +165,7 @@ class AttendenceList(models.Model):
         (3, 'Reagendado')
     ]
 
-    enrollment = models.ForeignKey(Enrollment, related_name='enrollment', on_delete=models.PROTECT)
+    enrollment = models.ForeignKey('clients.Enrollment', related_name='enrollment', on_delete=models.PROTECT)
     date = models.DateField(default=timezone.now())
     status = models.IntegerField(choices=ATTENDANCE_STATUS)
 

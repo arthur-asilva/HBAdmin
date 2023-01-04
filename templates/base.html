@@ -44,7 +44,7 @@
 				
 				<div class="">
 					<div class="main-menu-header">
-						<!-- <img class="img-radius" src="{% static 'assets/images/user/avatar-2.jpg' %}" alt="User-Profile-Image"> -->
+						<img class="img-radius" src="{% static 'assets/images/default_user_icon.jpeg' %}" alt="User-Profile-Image">
 						<div class="user-details">
 							<span>{{ user.name }}</span>
 							<div class="text-sm">{{ user.email }}</div>
@@ -127,7 +127,7 @@
 								</a>
 								<div class="dropdown-menu dropdown-menu-right profile-notification">
 									<div class="pro-head">
-										<img src="{% static 'assets/images/user/avatar-1.jpg' %}" class="img-radius" alt="User-Profile-Image">
+										<img src="{% static 'assets/images/default_user_icon.jpeg' %}" class="img-radius" alt="User-Profile-Image">
 										<span>{{ user.name }}</span>
 										<a href="{% url 'logout_view' %}" class="dud-logout" title="Logout">
 											<i class="feather icon-log-out"></i>

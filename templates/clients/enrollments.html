@@ -1,0 +1,86 @@
+{% extends '../base.html' %}
+{% load static %}
+{% load template_tags %}
+{% block main %}
+
+<div class="pcoded-content">
+    
+    <!-- [ Main Content ] start -->
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="mb-3">Controle de matrículas</h3>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2 col-sm-12">
+                            <ul class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                <li>
+                                    <a class="nav-link text-left {% if not edit_class %}active{% endif %}" id="v-pills-search-tab" data-toggle="pill" href="#v-pills-search" role="tab" aria-controls="v-pills-search" aria-selected="{% if edit_class %}false{% else %}true{% endif %}">
+                                        Pesquisa
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link text-left" href="../../clients/classes?c={{current_class.id}}&is_e=1" aria-selected="false">
+                                        Novo aluno     
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-10 col-sm-12">
+                            <div class="tab-content" id="v-pills-tabContent">
+                                <div class="tab-pane fade {% if not edit_class %}show active{% endif %}" id="v-pills-search" role="tabpanel" aria-labelledby="v-pills-search-tab">
+                                    <h5>{{current_class.client.name}}, {{current_class.weekday|intToWeekday}} às {{current_class.schedule}}</h5>
+                                    <h5 class="mb-3">Professor: {{current_class.teacher.name}}</h5>
+                                    <input class="form-control mb-3" id="SearchClassInput" type="text" placeholder="Procurar...">
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Nome do aluno</th>
+                                            <th class="text-center">Dia</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="ClassTable">
+                                            {% for enrollment in enrollments %}
+                                                <tr>
+                                                    <td>
+                                                        {{enrollment.student.name}}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <a href="{% url 'enrollments_view' %}?c={{current_class.id}}&e={{enrollment.id}}"><i class="feather icon-slash text-danger"></i></a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ Main Content ] end -->
+</div>
+<script>
+$(document).ready(function(){
+    $("#SearchClassInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#ClassTable tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+    $("#SearchStudentInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#StudentTable tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+});
+const selectStudent = (id) => {
+    const selected_student = document.querySelector('input[name="student_id"]')
+    selected_student.value = Number(id)
+    console.log(selected_student.value)
+}
+</script>
+{% endblock main %}
