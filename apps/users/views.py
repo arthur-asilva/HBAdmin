@@ -17,7 +17,7 @@ def HomeView(request):
             'access_group': 'ADM'
         }
 
-        user = Administrator.objects.filter(**user_data).values('id', 'name', 'email', 'photo')
+        user = Administrator.objects.filter(**user_data).values('id', 'name', 'email', 'photo', 'access_group')
         
         if user.exists():
             request.session['auth'] = json.dumps(user.first())

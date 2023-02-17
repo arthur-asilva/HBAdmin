@@ -173,6 +173,15 @@ class AttendenceList(models.Model):
 
 
 
+class Token(models.Model):
+    email = models.CharField(max_length=255)
+    token = models.CharField(max_length=8)
+    created_at = models.DateField(default=timezone.now())
+
+
+
+
+
 def sendmail(user):
     
     ctx = {
