@@ -17,7 +17,7 @@ def logged(function):
 def loggedToApi(function):
 
     def decorator(request, *args, **kwargs):
-        user = Token.objects.filter(email=request.data['email'])
+        user = Token.objects.filter(token=kwargs['token'])
         if user.exists():
             return function(request, *args, **kwargs)
         else:
