@@ -9,6 +9,7 @@ class ClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Classes
         fields = [
+                'id',
                 'client',
                 'client_name',
                 'client_address',
@@ -18,4 +19,26 @@ class ClassSerializer(serializers.ModelSerializer):
                 'teacher',
                 'service',
                 'is_active'
+            ]
+
+
+
+
+class EnrollmentSerializer(serializers.ModelSerializer):
+
+    student_id = serializers.CharField(source='student.id')
+    student_name = serializers.CharField(source='student.name')
+    class_name = serializers.CharField(source='enrollment_class.client.name')
+    class_schedule = serializers.CharField(source='enrollment_class.schedule')
+    class_weekday = serializers.CharField(source='enrollment_class.weekday')
+
+    class Meta:
+        model = models.Enrollment
+        fields = [
+                    'id',
+                    'student_id',
+                    'student_name',
+                    'class_name',
+                    'class_schedule',
+                    'class_weekday'
             ]

@@ -1,13 +1,14 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .serializers import UserSerializer
+from apps.api.clients.serializers import EnrollmentSerializer
 from apps.users.models import Student, Teacher, Token, get_random_string
+from apps.clients.models import Enrollment
 from apps.users.auth_wrapper import loggedToApi
 import json
 
 
 @api_view(['GET'])
-@loggedToApi
 def ApiGetStudent(request):
     serializer = UserSerializer(Student.objects.all(), many=True)
     return Response(serializer.data)
@@ -17,8 +18,9 @@ def ApiGetStudent(request):
 
 
 @api_view(['GET'])
-def ApiGetStudents(request, id):
-    serializer = UserSerializer(Student.objects.get(id=id))
+@loggedToApi
+def ApiGetStudents(request, token, id):
+    serializer = EnrollmentSerializer(Enrollment.objects.filter(enrollment_class__id=id).order_by('enrollment_class__weekday', 'enrollment_class__schedule'), many=True)
     return Response(serializer.data)
 
 
