@@ -8,8 +8,28 @@ class UserSerializer(serializers.ModelSerializer):
                 'id',
                 'name',
                 'email',
-                'password',
                 'access_group',
                 'skills',
-                'is_active'
+                'is_active',
+                'photo',
+                'created_at'
+            ]
+        
+
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Student
+        fields = [
+                'id',
+                'name',
+                'email',
+                'access_group',
+                'is_active',
+                'photo',
+                'created_at',
+                'height',
+                'mass',
+                'workout_tips',
+                'born_date',
+                'last_access'
             ]

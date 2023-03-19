@@ -21,7 +21,7 @@ class User(models.Model):
 
     name = models.CharField(max_length=250)
     email = models.CharField(max_length=250)
-    photo = models.CharField(max_length=250, default='...')
+    photo = models.TextField(default='...')
     password = models.CharField(max_length=250)
     access_group = models.CharField(max_length=3, choices=ACCESS_GROUPS)
     is_active = models.BooleanField(default=True)
@@ -159,8 +159,8 @@ class Student(User):
 class AttendenceList(models.Model):
 
     ATTENDANCE_STATUS = [
-        (0, 'Present'),
-        (1, 'Absent'),
+        (0, 'Presente'),
+        (1, 'Falta'),
         (2, 'Justificado'),
         (3, 'Reagendado')
     ]
@@ -186,11 +186,12 @@ def sendmail(user):
     
     ctx = {
         'name': user['name'],
-        'password': user['password']
+        'password': user['password'],
+        'email': user['email']
     }
 
     message = get_template('users/on_create_email.html').render(ctx)
-    msg = EmailMessage('Subject', message, 'icaro.arthur66@gmail.com', [user['email']])
+    msg = EmailMessage('HealthyBody', message, 'icaro.arthur66@gmail.com', [user['email']])
     msg.content_subtype ="html"
     msg.send()
 
