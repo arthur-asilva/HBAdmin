@@ -59,6 +59,7 @@ class Classes(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     teacher = models.ForeignKey('users.Teacher', related_name='teacher', on_delete=models.PROTECT)
     service = models.CharField(max_length=250)
+    duration = models.IntegerField(default=1, blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
     @classmethod

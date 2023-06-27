@@ -1,6 +1,7 @@
+from datetime import datetime
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer, StudentSerializer
+from .serializers import UserSerializer, StudentSerializer, AttendanceSerializer
 from apps.api.clients.serializers import EnrollmentSerializer
 from apps.users.models import Student, Teacher, Token, get_random_string, AttendenceList
 from apps.clients.models import Enrollment
@@ -23,6 +24,16 @@ def ChangeAttendance(request, token, id):
         AttendenceList.objects.bulk_create(attendence_list)
 
     return Response({'erro': False})
+
+
+
+
+@api_view(['POST'])
+@loggedToApi
+def GetAttendance(request, token):
+    formated_date = datetime.strptime(request.data['date'], '%Y-%m-%d').date()
+    attendence_list = AttendenceList.objects.filter(enrollment__enrollment_class__id=request.data['class_id'], date=formated_date)
+    return Response({'erro': False, 'list': AttendanceSerializer(attendence_list, many=True).data})
 
 
 
@@ -122,3 +133,13 @@ def GetUserByGroup(request):
     user = user_profile[request.data['access_group']].objects.filter(**params)
 
     return user
+
+
+
+
+
+def ToPunchIn(request):
+    start = datetime.strptime(request.data['start'], '%Y-%m-%d').date()
+    end = datetime.strptime(request.data['end'], '%Y-%m-%d').date()
+    get_values = AttendenceList.objects.filter(enrollment_class__teacher__id=request.data['id']).values_list()
+    return Response({'list':[get_values]})

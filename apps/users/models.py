@@ -72,7 +72,7 @@ class Administrator(User):
 
 
 class Teacher(User):
-    skills = models.JSONField(default={})
+    skills = models.JSONField(default=dict)
 
     @classmethod
     def create(cls, request):
@@ -120,9 +120,9 @@ def get_random_string(length):
 class Student(User):
     height = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
     mass = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    workout_tips = models.JSONField(default={})
+    workout_tips = models.JSONField(default=dict)
     born_date = models.DateField(null=True, blank=True)
-    last_access = models.DateField(default=timezone.now())
+    last_access = models.DateField(auto_now_add=True)
 
     @classmethod
     def create(cls, request):
@@ -166,7 +166,7 @@ class AttendenceList(models.Model):
     ]
 
     enrollment = models.ForeignKey('clients.Enrollment', related_name='enrollment', on_delete=models.PROTECT)
-    date = models.DateField(default=timezone.now())
+    date = models.DateTimeField(default=timezone.now())
     status = models.IntegerField(choices=ATTENDANCE_STATUS)
 
 

@@ -33,3 +33,18 @@ class StudentSerializer(serializers.ModelSerializer):
                 'born_date',
                 'last_access'
             ]
+        
+
+class AttendanceSerializer(serializers.ModelSerializer):
+
+    student_id = serializers.CharField(source='enrollment.student.id')
+    student_name = serializers.CharField(source='enrollment.student.name')
+
+    class Meta:
+        model = models.AttendenceList
+        fields = [
+                'id',
+                'date',
+                'student_id',
+                'student_name'
+            ]

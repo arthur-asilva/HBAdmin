@@ -13,6 +13,9 @@ urlpatterns = [
     path('api/user/<str:token>/student/<int:id>/update/', users.ApiSetStudent),
     path('api/user/<str:token>/class/<int:id>/students/', users.ApiGetStudents),
     path('api/user/<str:token>/class/<int:id>/attendance/', users.ChangeAttendance),
+    path('api/user/<str:token>/attendance/', users.GetAttendance),
+
+    path('api/user/<int:id>/to_puch_in/<str:start>/<str:end>/', users.ToPunchIn),
 
     path('api/user/teacher/<str:token>/classes/', clients.ApiGetClassesByTeacher),
     path('api/user/<str:token>/client/<int:id>/', clients.ApiGetClassesByTownhouse)
