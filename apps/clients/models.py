@@ -53,7 +53,7 @@ class Classes(models.Model):
         (6, 'Domingo')
     ]
 
-    client = models.ForeignKey(Client, related_name='client', on_delete=models.PROTECT)
+    client = models.ForeignKey('clients.Client', related_name='client', on_delete=models.PROTECT)
     schedule = models.CharField(max_length=5)
     weekday = models.IntegerField(choices=WEEKDAY_CHOICES)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
@@ -99,6 +99,6 @@ class Classes(models.Model):
 
 
 class Enrollment(models.Model):
-    student = models.ForeignKey(Student, related_name='student', on_delete=models.PROTECT)
-    enrollment_class = models.ForeignKey(Classes, related_name='enrollment_class', on_delete=models.PROTECT)
+    student = models.ForeignKey('users.Student', related_name='student', on_delete=models.PROTECT)
+    enrollment_class = models.ForeignKey('clients.Classes', related_name='enrollment_class', on_delete=models.PROTECT)
     is_active = models.BooleanField(default=True)
