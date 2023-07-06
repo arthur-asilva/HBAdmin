@@ -1,2 +1,2 @@
 apps/utils/private_data.py
-db.sqlite3
+db-o.sqlite3

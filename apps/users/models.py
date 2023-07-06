@@ -73,6 +73,8 @@ class Administrator(User):
 
 class Teacher(User):
     skills = models.JSONField(default=dict)
+    description = models.TextField(blank=True, null=True)
+    availability = models.JSONField(default=dict)
 
     @classmethod
     def create(cls, request):
@@ -81,8 +83,10 @@ class Teacher(User):
             'name': request['name'],
             'email': request['email'],
             'password': get_random_string(6),
-            'access_group': 'PROF',
+            'access_group': 'PRO',
             'skills': {'services': request.getlist('services')},
+            'availability': {'availabilities': request.getlist('availabilities')},
+            'description': request['description'],
             'is_active': request.get('is_active', None) is not None
         }
         
@@ -96,6 +100,8 @@ class Teacher(User):
             'name': request['name'],
             'email': request['email'],
             'skills': {'services': request.getlist('services')},
+            'availability': {'availabilities': request.getlist('availabilities')},
+            'description': request['description'],
             'is_active': request.get('is_active', None) is not None
         }
         
@@ -121,7 +127,7 @@ class Student(User):
     height = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
     mass = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     workout_tips = models.JSONField(default=dict)
-    born_date = models.DateField(null=True, blank=True)
+    born_date = models.DateField(null=True, blank=True, default=None)
     last_access = models.DateField(auto_now_add=True)
 
     @classmethod
@@ -165,9 +171,11 @@ class AttendenceList(models.Model):
         (3, 'Reagendado')
     ]
 
-    enrollment = models.ForeignKey('clients.Enrollment', related_name='enrollment', on_delete=models.PROTECT)
+    # enrollment = models.ForeignKey('clients.Enrollment', related_name='enrollment', on_delete=models.CASCADE)
     date = models.DateTimeField(default=timezone.now())
-    status = models.IntegerField(choices=ATTENDANCE_STATUS)
+    enrollments = models.JSONField(default={'enrollments': []})
+    attendence_class = models.ForeignKey('clients.Classes', related_name='attendence_class', on_delete=models.PROTECT, null=True)
+    # status = models.IntegerField(choices=ATTENDANCE_STATUS)
 
 
 

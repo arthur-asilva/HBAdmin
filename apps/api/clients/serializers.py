@@ -28,6 +28,7 @@ class EnrollmentSerializer(serializers.ModelSerializer):
 
     student_id = serializers.CharField(source='student.id')
     student_name = serializers.CharField(source='student.name')
+    class_id = serializers.CharField(source='enrollment_class.client.id')
     class_name = serializers.CharField(source='enrollment_class.client.name')
     class_schedule = serializers.CharField(source='enrollment_class.schedule')
     class_weekday = serializers.CharField(source='enrollment_class.weekday')
@@ -38,6 +39,7 @@ class EnrollmentSerializer(serializers.ModelSerializer):
                     'id',
                     'student_id',
                     'student_name',
+                    'class_id',
                     'class_name',
                     'class_schedule',
                     'class_weekday'

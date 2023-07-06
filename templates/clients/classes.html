@@ -97,6 +97,11 @@
                                             </div>
 
                                             <div class="form-group">
+                                                <label for="Duration">Quantidade de hora(s)/aula</label>
+                                                <input type="number" min="1" required class="form-control" name="duration" id="Duration" placeholder="Tempo de aula em horas" value="1">
+                                            </div>
+
+                                            <div class="form-group">
                                                 <label for="TeacherInput">Escolha o professor</label>
                                                 <select class="form-control" id="TeacherInput" name="teacher">
                                                     {% for teacher in teachers %}
@@ -115,8 +120,8 @@
                                             </div>
 
                                             <div class="form-group">
-                                                <label for="PriceInput">Horário</label>
-                                                <input type="number" class="form-control" name="price" id="PriceInput" placeholder="Valor da hora/aula" value="{{current_class.price}}">
+                                                <label for="PriceInput">Valor</label>
+                                                <input type="number" class="form-control" name="price" id="PriceInput" placeholder="Valor da hora/aula" value="{% if not edit_class %}0.00{% else %}{{current_class.price}}{% endif %}">
                                             </div>
 
                                             <div class="custom-control custom-switch mb-3">

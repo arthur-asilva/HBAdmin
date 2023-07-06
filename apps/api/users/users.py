@@ -2,9 +2,9 @@ from datetime import datetime
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .serializers import UserSerializer, StudentSerializer, AttendanceSerializer
-from apps.api.clients.serializers import EnrollmentSerializer
+from apps.api.clients.serializers import EnrollmentSerializer, ClassSerializer
 from apps.users.models import Student, Teacher, Token, get_random_string, AttendenceList
-from apps.clients.models import Enrollment
+from apps.clients.models import Enrollment, Classes
 from apps.users.auth_wrapper import loggedToApi
 from django.utils.timezone import now
 
@@ -15,13 +15,19 @@ from django.utils.timezone import now
 @loggedToApi
 def ChangeAttendance(request, token, id):
 
-    enrollments = Enrollment.objects.filter(enrollment_class=id, student__in=request.data['students'])
-    attendence_list = [AttendenceList(**{'enrollment': x, 'date': request.data['date'], 'status': request.data['status']}) for x in enrollments]
-    
-    try:
-        AttendenceList.objects.filter(enrollment__enrollment_class__id=id, date=request.data['date']).delete()
-    finally:
-        AttendenceList.objects.bulk_create(attendence_list)
+    data = {
+        'enrollments': [{'id': item.id, 'student_id': item.student.id, 'name': item.student.name}
+                        for item in Enrollment.objects.filter(student__in=request.data['students'])],
+        'attendence_class': Classes.objects.get(id=id),
+        'date': request.data['date']
+    }
+
+    attendence = AttendenceList.objects.filter(date=request.data['date'], attendence_class__id=id)
+
+    if attendence.count() == 0:
+        AttendenceList.objects.create(**data)
+    else:
+        attendence.update(**data)
 
     return Response({'erro': False})
 
@@ -32,8 +38,9 @@ def ChangeAttendance(request, token, id):
 @loggedToApi
 def GetAttendance(request, token):
     formated_date = datetime.strptime(request.data['date'], '%Y-%m-%d').date()
-    attendence_list = AttendenceList.objects.filter(enrollment__enrollment_class__id=request.data['class_id'], date=formated_date)
-    return Response({'erro': False, 'list': AttendanceSerializer(attendence_list, many=True).data})
+    attendence_list = AttendenceList.objects.filter(attendence_class_id=request.data['class_id'], date=formated_date)
+    # return Response({'erro': False, 'list': attendence_list.enrollments.enrollments})
+    return Response({'erro': False, 'attendence_list': attendence_list.values()})
 
 
 

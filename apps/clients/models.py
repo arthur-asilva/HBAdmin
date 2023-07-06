@@ -72,6 +72,7 @@ class Classes(models.Model):
             'price': request['price'].replace(',', '.'),
             'teacher': Teacher.objects.get(id=request['teacher']),
             'service': request['service'],
+            'duration': request['duration'],
             'is_active': request.get('is_active', None) is not None
         }
         
@@ -87,6 +88,7 @@ class Classes(models.Model):
             'price': request['price'].replace(',', '.'),
             'teacher': Teacher.objects.get(id=request['teacher']),
             'service': request['service'],
+            'duration': request['duration'],
             'is_active': request.get('is_active', None) is not None
         }
         

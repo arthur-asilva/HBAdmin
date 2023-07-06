@@ -1,5 +1,6 @@
 {% extends '../base.html' %}
-
+{% load static %}
+{% load template_tags %}
 {% block main %}
 
 <div class="pcoded-content">
@@ -87,6 +88,26 @@
                                                 <input type="checkbox" {% if edit_teacher and not teacher.is_active %}{% else %}checked{% endif %} name="is_active" class="custom-control-input" id="customswitch1">
                                                 <label class="custom-control-label" for="customswitch1">Ativo</label>
                                             </div>
+
+                                            <div class="form-group">
+                                                <h5 class="mb-3">Disponibilidade</h5>
+                                                <div class="col-md-12 services-grid mb-3">
+                                                    {% for day in weekday_interval %}
+                                                        <div class="form-group form-check check-group">
+                                                            <input type="checkbox" name="availabilities" {% if edit_teacher and day|slugify in teacher.availability.availabilities %}checked{% endif %} value="{{day}}" class="form-check-input" id="Check{{day}}">
+                                                            <label class="form-check-label" for="Check{{day}}">{{day|intToWeekday}}</label>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <h5 class="mb-3">Graduação/detalhes</h5>
+                                                <div class="form-group">
+                                                    <textarea class="form-control" name="description" rows="5">{% if edit_teacher %}{{teacher.description}}{% endif %}</textarea>
+                                                </div>
+                                            </div>
+
                                             {% if edit_teacher %}
                                                 <a class="text-danger" style="margin-right: 30px" href="{% url 'teachers_view' %}">Cancelar</a>
                                             {% endif %}

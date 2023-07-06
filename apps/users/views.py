@@ -50,7 +50,8 @@ def TeachersView(request):
         'teachers': Teacher.objects.all(),
         'services': Service.objects.all(),
         'teacher': teacher,
-        'edit_teacher': edit_teacher
+        'edit_teacher': edit_teacher,
+        'weekday_interval': range(0, 7)
     }
 
     if request.method == 'POST':
