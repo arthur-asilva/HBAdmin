@@ -1,12 +1,13 @@
 from datetime import datetime
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer, StudentSerializer, AttendanceSerializer
-from apps.api.clients.serializers import EnrollmentSerializer, ClassSerializer
+from .serializers import UserSerializer, StudentSerializer
+from apps.api.clients.serializers import EnrollmentSerializer
 from apps.users.models import Student, Teacher, Token, get_random_string, AttendenceList
 from apps.clients.models import Enrollment, Classes
 from apps.users.auth_wrapper import loggedToApi
 from django.utils.timezone import now
+
 
 
 
@@ -34,12 +35,12 @@ def ChangeAttendance(request, token, id):
 
 
 
+
 @api_view(['POST'])
 @loggedToApi
 def GetAttendance(request, token):
     formated_date = datetime.strptime(request.data['date'], '%Y-%m-%d').date()
     attendence_list = AttendenceList.objects.filter(attendence_class_id=request.data['class_id'], date=formated_date)
-    # return Response({'erro': False, 'list': attendence_list.enrollments.enrollments})
     return Response({'erro': False, 'attendence_list': attendence_list.values()})
 
 
@@ -50,7 +51,17 @@ def GetAttendance(request, token):
 @loggedToApi
 def ApiGetStudent(request, token, id):
     serializer = StudentSerializer(Student.objects.get(id=id))
-    score = AttendenceList.objects.filter(enrollment__student__id=id, date__year=now().year).count()
+    score = 0
+    frequency = AttendenceList.objects.values('enrollments').filter(date__year=now().year)
+    full_list = []
+
+    for x in frequency:
+        full_list += x['enrollments']
+
+    for x in full_list:
+        if x['student_id'] == id:
+            score += 1
+
     result = serializer.data.copy()
     result['score'] = score
     return Response(result)
@@ -83,11 +94,13 @@ def ChangePassword(request, token):
 
 
 
+
 @api_view(['GET'])
 @loggedToApi
 def Logout(request, token):
     Token.objects.get(token=token).delete()
     return Response({ 'erro': False, 'message': 'Operação concluída com sucesso.' })
+
 
 
 
@@ -146,7 +159,7 @@ def GetUserByGroup(request):
 
 
 def ToPunchIn(request):
-    start = datetime.strptime(request.data['start'], '%Y-%m-%d').date()
-    end = datetime.strptime(request.data['end'], '%Y-%m-%d').date()
-    get_values = AttendenceList.objects.filter(enrollment_class__teacher__id=request.data['id']).values_list()
-    return Response({'list':[get_values]})
+    # start = datetime.strptime(request.data['start'], '%Y-%m-%d').date()
+    # end = datetime.strptime(request.data['end'], '%Y-%m-%d').date()
+    # get_values = AttendenceList.objects.filter(enrollment_class__teacher__id=request.data['id']).values_list()
+    return Response({'list': []})
