@@ -12,7 +12,9 @@ class UserSerializer(serializers.ModelSerializer):
                 'skills',
                 'is_active',
                 'photo',
-                'created_at'
+                'created_at',
+                'description',
+                'availability'
             ]
         
 
