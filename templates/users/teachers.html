@@ -84,9 +84,11 @@
                                                 </div>
                                             </div>
 
-                                            <div class="custom-control custom-switch mb-3">
-                                                <input type="checkbox" {% if edit_teacher and not teacher.is_active %}{% else %}checked{% endif %} name="is_active" class="custom-control-input" id="customswitch1">
-                                                <label class="custom-control-label" for="customswitch1">Ativo</label>
+                                            <div class="form-group">
+                                                <div class="custom-control custom-switch mb-3">
+                                                    <input type="checkbox" {% if edit_teacher and not teacher.is_hired %}{% else %}checked{% endif %} name="is_hired" class="custom-control-input" id="customswitch2">
+                                                    <label class="custom-control-label" for="customswitch2">Contratado</label>
+                                                </div>
                                             </div>
 
                                             <div class="form-group">
@@ -105,6 +107,13 @@
                                                 <h5 class="mb-3">Graduação/detalhes</h5>
                                                 <div class="form-group">
                                                     <textarea class="form-control" name="description" rows="5">{% if edit_teacher %}{{teacher.description}}{% endif %}</textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <div class="custom-control custom-switch mb-3">
+                                                    <input type="checkbox" {% if edit_teacher and not teacher.is_active %}{% else %}checked{% endif %} name="is_active" class="custom-control-input" id="customswitch1">
+                                                    <label class="custom-control-label" for="customswitch1">Ativo</label>
                                                 </div>
                                             </div>
 

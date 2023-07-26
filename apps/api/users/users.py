@@ -20,7 +20,8 @@ def ChangeAttendance(request, token, id):
         'enrollments': [{'id': item.id, 'student_id': item.student.id, 'name': item.student.name}
                         for item in Enrollment.objects.filter(student__in=request.data['students'])],
         'attendence_class': Classes.objects.get(id=id),
-        'date': request.data['date']
+        'date': request.data['date'],
+        'details': request.data['details']
     }
 
     attendence = AttendenceList.objects.filter(date=request.data['date'], attendence_class__id=id)
@@ -41,6 +42,7 @@ def ChangeAttendance(request, token, id):
 def GetAttendance(request, token):
     formated_date = datetime.strptime(request.data['date'], '%Y-%m-%d').date()
     attendence_list = AttendenceList.objects.filter(attendence_class_id=request.data['class_id'], date=formated_date)
+    print(attendence_list)
     return Response({'erro': False, 'attendence_list': attendence_list.values()})
 
 
@@ -64,6 +66,7 @@ def ApiGetStudent(request, token, id):
 
     result = serializer.data.copy()
     result['score'] = score
+    result['progress'] = round((score / frequency.count()), 1) * 100
     return Response(result)
 
 

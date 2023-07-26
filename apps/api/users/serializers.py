@@ -48,5 +48,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
                 'id',
                 'date',
                 'student_id',
-                'student_name'
+                'student_name',
+                'details'
             ]

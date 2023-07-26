@@ -75,6 +75,7 @@ class Teacher(User):
     skills = models.JSONField(default=dict)
     description = models.TextField(blank=True, null=True)
     availability = models.JSONField(default=dict)
+    is_hired = models.BooleanField(default=True, blank=True, null=True)
 
     @classmethod
     def create(cls, request):
@@ -87,6 +88,7 @@ class Teacher(User):
             'skills': {'services': request.getlist('services')},
             'availability': {'availabilities': request.getlist('availabilities')},
             'description': request['description'],
+            'is_hired': request.get('is_hired', None) is not None,
             'is_active': request.get('is_active', None) is not None
         }
         
@@ -102,6 +104,7 @@ class Teacher(User):
             'skills': {'services': request.getlist('services')},
             'availability': {'availabilities': request.getlist('availabilities')},
             'description': request['description'],
+            'is_hired': request.get('is_hired', None) is not None,
             'is_active': request.get('is_active', None) is not None
         }
         
@@ -175,6 +178,7 @@ class AttendenceList(models.Model):
     date = models.DateTimeField(default=timezone.now())
     enrollments = models.JSONField(default={'enrollments': []})
     attendence_class = models.ForeignKey('clients.Classes', related_name='attendence_class', on_delete=models.PROTECT, null=True)
+    details = models.TextField(blank=True, null=True)
     # status = models.IntegerField(choices=ATTENDANCE_STATUS)
 
 
