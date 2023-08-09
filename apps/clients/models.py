@@ -43,19 +43,19 @@ class Client(models.Model):
 
 class Classes(models.Model):
 
-    WEEKDAY_CHOICES = [
-        (0, 'Segunda'),
-        (1, 'Terça'),
-        (2, 'Quarta'),
-        (3, 'Quinta'),
-        (4, 'Sexta'),
-        (5, 'Sábado'),
-        (6, 'Domingo')
-    ]
+    # WEEKDAY_CHOICES = [
+    #     (0, 'Segunda'),
+    #     (1, 'Terça'),
+    #     (2, 'Quarta'),
+    #     (3, 'Quinta'),
+    #     (4, 'Sexta'),
+    #     (5, 'Sábado'),
+    #     (6, 'Domingo')
+    # ]
 
     client = models.ForeignKey('clients.Client', related_name='client', on_delete=models.PROTECT)
     schedule = models.CharField(max_length=5)
-    weekday = models.IntegerField(choices=WEEKDAY_CHOICES)
+    weekday = models.JSONField(default={"days": []}, blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     teacher = models.ForeignKey('users.Teacher', related_name='teacher', on_delete=models.PROTECT)
     service = models.CharField(max_length=250)
@@ -68,14 +68,13 @@ class Classes(models.Model):
         data = {
             'client': Client.objects.get(id=request['client']),
             'schedule': request['schedule'],
-            'weekday': request['weekday'],
+            'weekday': {"days": [int(x) for x in request.getlist('weekday')]},
             'price': request['price'].replace(',', '.'),
             'teacher': Teacher.objects.get(id=request['teacher']),
             'service': request['service'],
             'duration': request['duration'],
             'is_active': request.get('is_active', None) is not None
         }
-        
         cls.objects.create(**data)
 
     @classmethod
@@ -84,14 +83,13 @@ class Classes(models.Model):
         data = {
             'client': Client.objects.get(id=request['client']),
             'schedule': request['schedule'],
-            'weekday': request['weekday'],
+            'weekday': {"days": [int(x) for x in request.getlist('weekday')]},
             'price': request['price'].replace(',', '.'),
             'teacher': Teacher.objects.get(id=request['teacher']),
             'service': request['service'],
             'duration': request['duration'],
             'is_active': request.get('is_active', None) is not None
         }
-        
         cls.objects.filter(id=id).update(**data)
 
 

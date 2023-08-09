@@ -52,7 +52,8 @@
                                             {% for class in classes %}
                                                 <tr>
                                                     <td>{{class.client.name}}</td>
-                                                    <th class="text-center">{{class.weekday|intToWeekday}}</th>
+                                                    {% comment %} <th class="text-center">    {{class.weekday|intToWeekday}}  </th> {% endcomment %}
+                                                    <th class="text-center">X</th>
                                                     <th class="text-center">{{class.schedule}}</th>
                                                     <td class="text-center">
                                                         {% if class.is_active %}
@@ -89,11 +90,13 @@
 
                                             <div class="form-group">
                                                 <label for="WeekdayInput">Dia da aula</label>
-                                                <select class="form-control" id="WeekdayInput" name="weekday">
+                                                <div style="display: flex; flex-direction: row; justify-content: space-between;">
                                                     {% for weekday_value in weekday_interval %}
-                                                        <option {% if current_class.weekday is weekday_value %}selected{% endif %} value="{{weekday_value}}">{{weekday_value|intToWeekday}}</option>
+                                                        <div>
+                                                            <input name="weekday" type="checkbox" value="{{weekday_value}}" {% if weekday_value in current_class.weekday.days%}checked{% endif %} /> {{weekday_value|intToWeekday}}
+                                                        </div>
                                                     {% endfor %}
-                                                </select>
+                                                </div>
                                             </div>
 
                                             <div class="form-group">
@@ -147,7 +150,8 @@
                                                 <input type="hidden" name="student_id" />
                                                 <input type="hidden" name="class_id" value="{{current_class.id}}" />
                                                 <h2>Adicionar aluno em:</h2>
-                                                <h5>{{current_class.client.name}}, {{current_class.weekday|intToWeekday}} às {{current_class.schedule}}</h5>
+                                                {% comment %} <h5>{{current_class.client.name}}, {{current_class.weekday|intToWeekday}} às {{current_class.schedule}}</h5> {% endcomment %}
+                                                <h5>{{current_class.client.name}}, X às {{current_class.schedule}}</h5>
                                                 <h5 class="mb-3">Professor: {{current_class.teacher.name}}</h5>
                                                 <input class="form-control mb-3" id="SearchStudentInput" type="text" placeholder="Procurar alunos...">
                                                 <table class="table table-bordered table-striped">
