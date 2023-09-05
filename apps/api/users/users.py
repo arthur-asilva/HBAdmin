@@ -1,7 +1,7 @@
 from datetime import datetime
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer, StudentSerializer
+from .serializers import UserSerializer, StudentSerializer, AttendanceSerializer
 from apps.api.clients.serializers import EnrollmentSerializer
 from apps.users.models import Student, Teacher, Token, get_random_string, AttendenceList
 from apps.clients.models import Enrollment, Classes
@@ -21,7 +21,8 @@ def ChangeAttendance(request, token, id):
                         for item in Enrollment.objects.filter(student__in=request.data['students'])],
         'attendence_class': Classes.objects.get(id=id),
         'date': request.data['date'],
-        'details': request.data['details']
+        'details': request.data['details'],
+        'photo': request.data['photo']
     }
 
     attendence = AttendenceList.objects.filter(date=request.data['date'], attendence_class__id=id)
@@ -32,6 +33,36 @@ def ChangeAttendance(request, token, id):
         attendence.update(**data)
 
     return Response({'erro': False})
+
+
+
+
+
+@api_view(['GET'])
+@loggedToApi
+def ApiLessonsList(request, token, id):
+    user = Token.objects.get(token=token).email
+    lessons = AttendanceSerializer(AttendenceList.objects.filter(attendence_class__id=id).order_by('-date'), many=True)
+    return Response({'erro': False, 'lessons': lessons.data})
+
+
+
+
+
+@api_view(['GET'])
+@loggedToApi
+def ApiLessonsLike(request, token, id):
+    email = Token.objects.get(token=token).email
+    user = Student.objects.get(email=email)
+    lesson = AttendenceList.objects.get(id=id)
+    if user.id not in lesson.likes['users']:
+        lesson.likes['users'].append(user.id)
+        lesson.total_likes = lesson.total_likes + 1
+    else:
+        lesson.likes['users'].remove(user.id)
+        lesson.total_likes = lesson.total_likes - 1
+    lesson.save()
+    return Response({'erro': False, 'lesson': AttendanceSerializer(lesson).data})
 
 
 
@@ -124,7 +155,7 @@ def ChangePhoto(request, token):
 @api_view(['GET'])
 @loggedToApi
 def ApiGetStudents(request, token, id):
-    serializer = EnrollmentSerializer(Enrollment.objects.filter(enrollment_class__id=id).order_by('enrollment_class__weekday', 'enrollment_class__schedule'), many=True)
+    serializer = EnrollmentSerializer(Enrollment.objects.filter(enrollment_class__id=id).order_by('enrollment_class__weekday', 'enrollment_class__schedule', 'student__name'), many=True)
     return Response(serializer.data)
 
 

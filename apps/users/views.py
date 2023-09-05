@@ -139,3 +139,10 @@ def StudentsView(request):
             Student.create(request_data)
 
     return render(request, 'users/students.html', data)
+
+
+
+
+@logged
+def DashView(request):
+    return render(request, 'dash.html')

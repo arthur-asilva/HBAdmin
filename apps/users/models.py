@@ -179,6 +179,9 @@ class AttendenceList(models.Model):
     enrollments = models.JSONField(default={'enrollments': []})
     attendence_class = models.ForeignKey('clients.Classes', related_name='attendence_class', on_delete=models.PROTECT, null=True)
     details = models.TextField(blank=True, null=True)
+    photo = models.TextField(blank=True, null=True)
+    total_likes = models.IntegerField(default=0)
+    likes = models.JSONField(default={'users': []})
     # status = models.IntegerField(choices=ATTENDANCE_STATUS)
 
 

@@ -70,7 +70,7 @@ def ClassesView(request):
         'is_enrolling': is_enrolling,
         'weekday_interval': range(0, 7)
     }
-    print(enrollments_inclass)
+    
     return render(request, 'clients/classes.html', data)
 
 
