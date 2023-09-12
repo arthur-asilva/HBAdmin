@@ -2,7 +2,7 @@ from datetime import datetime
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .serializers import UserSerializer, StudentSerializer, AttendanceSerializer
-from apps.api.clients.serializers import EnrollmentSerializer
+from apps.api.clients.serializers import EnrollmentSerializer, ClassSerializer
 from apps.users.models import Student, Teacher, Token, get_random_string, AttendenceList
 from apps.clients.models import Enrollment, Classes
 from apps.users.auth_wrapper import loggedToApi
@@ -98,6 +98,9 @@ def ApiGetStudent(request, token, id):
     result = serializer.data.copy()
     result['score'] = score
     result['progress'] = round((score / frequency.count()), 1) * 100
+    result['enrollments'] = Enrollment.objects.filter(student__id = id, is_active=True).values('enrollment_class__id', 'enrollment_class__service', 'enrollment_class__schedule', 'enrollment_class__weekday').order_by('-enrollment_class__schedule')
+    result['townhouse_classes'] = ClassSerializer(Classes.objects.filter(client__id=result['townhouse'], is_active=True), many=True).data
+
     return Response(result)
 
 
@@ -197,3 +200,22 @@ def ToPunchIn(request):
     # end = datetime.strptime(request.data['end'], '%Y-%m-%d').date()
     # get_values = AttendenceList.objects.filter(enrollment_class__teacher__id=request.data['id']).values_list()
     return Response({'list': []})
+
+
+
+
+@api_view(['GET'])
+@loggedToApi
+def ApiClassSubscribe(request, token, id):
+    email = Token.objects.get(token=token).email
+    user = Student.objects.get(email=email)
+
+    enrollments = Enrollment.objects.filter(enrollment_class__id=id, student__id=user.id)
+
+    if enrollments.count() > 0:
+        enrollments.delete()
+    else:
+        Enrollment.objects.create(student=user, enrollment_class=Classes.objects.get(id=id))
+    
+
+    return Response({'error': False, 'is_subscribe': enrollments.count() > 0})

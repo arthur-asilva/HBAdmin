@@ -2,12 +2,12 @@ from django.db import models
 from django.utils import timezone
 
 from django.template import Context
-from django.template.loader import render_to_string, get_template
+from django.template.loader import get_template
 from django.core.mail import EmailMessage
+
 
 import random
 import string
-
 
 
 
@@ -132,6 +132,7 @@ class Student(User):
     workout_tips = models.JSONField(default=dict)
     born_date = models.DateField(null=True, blank=True, default=None)
     last_access = models.DateField(auto_now_add=True)
+    townhouse = models.ForeignKey('clients.Client', related_name='townhouse', on_delete=models.PROTECT, blank=True, null=True)
 
     @classmethod
     def create(cls, request):

@@ -33,7 +33,8 @@ class StudentSerializer(serializers.ModelSerializer):
                 'mass',
                 'workout_tips',
                 'born_date',
-                'last_access'
+                'last_access',
+                'townhouse'
             ]
         
 
