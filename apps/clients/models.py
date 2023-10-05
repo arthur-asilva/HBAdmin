@@ -1,5 +1,6 @@
 from django.db import models
 from apps.users.models import Teacher, Student
+from django.utils import timezone
 
 
 
@@ -100,3 +101,16 @@ class Enrollment(models.Model):
     student = models.ForeignKey('users.Student', related_name='student', on_delete=models.PROTECT)
     enrollment_class = models.ForeignKey('clients.Classes', related_name='enrollment_class', on_delete=models.PROTECT)
     is_active = models.BooleanField(default=True)
+
+
+
+
+
+class Schedule(models.Model):
+    student = models.ForeignKey('users.Student', related_name='student_schedule', on_delete=models.PROTECT)
+    service = models.ForeignKey(Service, related_name='service_schedule', on_delete=models.PROTECT)
+    professional = models.ForeignKey('users.Teacher', null=True, related_name='professional_schedule', on_delete=models.PROTECT)
+    date = models.DateField()
+    hour = models.TimeField()
+    status = models.BooleanField(default=False)
+    created = models.DateTimeField(default=timezone.now(), null=True)

@@ -44,3 +44,40 @@ class EnrollmentSerializer(serializers.ModelSerializer):
                     'class_schedule',
                     'class_weekday'
             ]
+        
+
+
+class SchedulesSerializer(serializers.ModelSerializer):
+
+    student_name = serializers.CharField(source='student.name')
+    professional_name = serializers.CharField(source='professional.name', allow_null=True)
+    student_id = serializers.CharField(source='student.id')
+    service_name = serializers.CharField(source='service.name')
+    townhouse = serializers.CharField(source='student.townhouse.name')
+
+    class Meta:
+        model = models.Schedule
+        fields = [
+                'id',
+                'student_name',
+                'student_id',
+                'townhouse',
+                'professional',
+                'professional_name',
+                'service_name',
+                'date',
+                'hour',
+                'status',
+                'created',
+            ]
+        
+
+
+class ServicesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Service
+        fields = [
+                'id',
+                'name'
+            ]
