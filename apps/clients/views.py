@@ -45,9 +45,12 @@ def ClassesView(request):
         enrollments_inclass = list(enrollments_inclass)
 
     if request.method == 'POST':
+        request_post = request.POST.copy()
+        request_post['client'] = Client.objects.get(id=request.POST['client'])
+        request_post['teacher'] = Teacher.objects.get(id=request.POST['teacher'])
 
         if edit_class and not is_enrolling:
-            Classes.update(edit_class, request.POST.copy())
+            Classes.update(edit_class, request_post)
             return redirect('../clients/classes')
 
         if edit_class and is_enrolling:
@@ -57,7 +60,7 @@ def ClassesView(request):
             )
             return redirect(f"../clients/enrollments?c={edit_class}")
 
-        Classes.create(request.POST.copy())
+        Classes.create(request_post)
 
     data = {
         'classes': Classes.objects.all(),

@@ -67,11 +67,11 @@ class Classes(models.Model):
     def create(cls, request):
 
         data = {
-            'client': Client.objects.get(id=request['client']),
+            'client': request['client'],
             'schedule': request['schedule'],
             'weekday': {"days": [int(x) for x in request.getlist('weekday')]},
             'price': request['price'].replace(',', '.'),
-            'teacher': Teacher.objects.get(id=request['teacher']),
+            'teacher': request['teacher'],
             'service': request['service'],
             'duration': request['duration'],
             'is_active': request.get('is_active', None) is not None
@@ -82,11 +82,11 @@ class Classes(models.Model):
     def update(cls, id, request):
 
         data = {
-            'client': Client.objects.get(id=request['client']),
+            'client': request['client'],
             'schedule': request['schedule'],
             'weekday': {"days": [int(x) for x in request.getlist('weekday')]},
             'price': request['price'].replace(',', '.'),
-            'teacher': Teacher.objects.get(id=request['teacher']),
+            'teacher': request['teacher'],
             'service': request['service'],
             'duration': request['duration'],
             'is_active': request.get('is_active', None) is not None
