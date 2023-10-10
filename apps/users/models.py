@@ -177,7 +177,7 @@ class AttendenceList(models.Model):
     # enrollment = models.ForeignKey('clients.Enrollment', related_name='enrollment', on_delete=models.CASCADE)
     date = models.DateTimeField(default=timezone.now())
     enrollments = models.JSONField(default={'enrollments': []})
-    attendence_class = models.ForeignKey('clients.Classes', related_name='attendence_class', on_delete=models.PROTECT, null=True)
+    attendence_class = models.ForeignKey('clients.Classes', null=True, related_name='attendence_class', on_delete=models.PROTECT)
     details = models.TextField(blank=True, null=True)
     photo = models.TextField(blank=True, null=True)
     total_likes = models.IntegerField(default=0)
