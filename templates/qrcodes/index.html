@@ -1,0 +1,39 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block main %}
+
+<div class="pcoded-content">
+    
+    <!-- [ Main Content ] start -->
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="mb-3">QR Code</h3>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="tab-content" id="v-pills-tabContent">
+                                <h2>Gerar QR Code</h2>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="InputURL">Link</label>
+                                        <input type="text" required class="form-control" name="url" id="InputURL" placeholder="https://www.link.com">
+                                    </div>
+                                    {% if generated %}
+                                        <div class="form-group" style="text-align: center">
+                                            <image src="{% static 'last_qr.png' %}" />
+                                        </div>
+                                    {% endif %}
+                                    <button type="submit" class="btn btn-primary">Gerar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ Main Content ] end -->
+</div>
+{% endblock main %}

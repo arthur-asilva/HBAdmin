@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'apps.api',
     'apps.users',
     'apps.clients',
-    'apps.utils'
+    'apps.utils',
+    'apps.qrcodes'
 ]
 
 MIDDLEWARE = [
