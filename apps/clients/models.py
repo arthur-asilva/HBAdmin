@@ -10,7 +10,7 @@ class Service(models.Model):
 class Client(models.Model):
     name = models.CharField(max_length=250)
     address = models.CharField(max_length=250)
-    services = models.JSONField(default={})
+    services = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
 
     @classmethod
@@ -53,9 +53,12 @@ class Classes(models.Model):
     #     (6, 'Domingo')
     # ]
 
+    def weekday_default_value():
+        return {'days': []}
+
     client = models.ForeignKey('clients.Client', null=True, related_name='client', on_delete=models.PROTECT)
     schedule = models.CharField(max_length=5)
-    weekday = models.JSONField(default={"days": []}, blank=True, null=True)
+    weekday = models.JSONField(default=weekday_default_value, blank=True, null=True)
     price = models.DecimalField(max_digits=10, null=True, decimal_places=2, default=0.00)
     teacher = models.ForeignKey('users.Teacher', null=True, related_name='teacher', on_delete=models.PROTECT)
     service = models.CharField(max_length=250)
@@ -105,6 +108,18 @@ class Enrollment(models.Model):
 
 
 
+class Unsubscribe(models.Model):
+    enrollment_class = models.ForeignKey('clients.Classes', null=True, related_name='unsubscribe_class', on_delete=models.PROTECT)
+    student = models.ForeignKey('users.Student', null=True, related_name='class_student', on_delete=models.PROTECT)
+    teacher = models.ForeignKey('users.Teacher', null=True, related_name='class_teacher', on_delete=models.PROTECT)
+    comment = models.TextField(null=True)
+    created = models.DateField(default=timezone.now, null=True)
+
+
+
+
+
+
 class Schedule(models.Model):
     student = models.ForeignKey('users.Student',null=True, related_name='student_schedule', on_delete=models.PROTECT)
     service = models.ForeignKey('clients.Service', null=True, related_name='service_schedule', on_delete=models.PROTECT)
@@ -112,4 +127,7 @@ class Schedule(models.Model):
     date = models.DateField()
     hour = models.TimeField()
     status = models.BooleanField(default=False)
-    created = models.DateTimeField(default=timezone.now(), null=True)
+    created = models.DateField(default=timezone.now, null=True)
+
+
+

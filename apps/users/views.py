@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Administrator, Teacher, Student
 from .auth_wrapper import logged
-from apps.clients.models import Service
+from apps.clients.models import Service, Client
 from django.conf import settings
 import json
 
@@ -127,11 +127,14 @@ def StudentsView(request):
     data = {
         'students': Student.objects.all(),
         'student': student,
-        'edit_student': edit_student
+        'edit_student': edit_student,
+        'clients': Client.objects.all()
     }
 
     if request.method == 'POST':
         request_data = request.POST.copy()
+        request_data['email']: request.POST['email']
+        request_data['townhouse']: Client.objects.get(id=request.POST['townhouse'])
         if edit_student:
             Student.update(student.id, request_data)
             return redirect('../students/')

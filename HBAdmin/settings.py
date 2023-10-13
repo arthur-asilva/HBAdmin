@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 from apps.utils.private_data import *
+import platform
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,22 +23,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-2^%bjxc7_g@-q(lkv7&1#&q2pj8ra0guec3fh8y7y7-f3cryd6'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CURRENT_HOST = 'http://localhost:8000'
-
-if DEBUG is False:
-    CURRENT_HOST = 'http://ec2-184-72-204-96.compute-1.amazonaws.com'
+if platform.system() == 'Linux':
+    ALLOWED_HOSTS = PRIVATE_ALLOWED_HOSTS
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

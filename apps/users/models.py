@@ -9,6 +9,9 @@ import random
 import string
 
 
+from apps.clients.models import Client
+
+
 
 class User(models.Model):
 
@@ -24,7 +27,7 @@ class User(models.Model):
     password = models.CharField(max_length=250)
     access_group = models.CharField(max_length=3, choices=ACCESS_GROUPS)
     is_active = models.BooleanField(default=True)
-    created_at = models.DateField(default=timezone.now())
+    created_at = models.DateField(default=timezone.now)
 
     def __str__(self):
         return self.name
@@ -139,6 +142,7 @@ class Student(User):
         data = {
             'name': request['name'],
             'email': request['email'],
+            'townhouse': Client.objects.get(id=request['townhouse']),
             'password': get_random_string(6),
             'access_group': 'ALU',
             'is_active': request.get('is_active', None) is not None
@@ -153,6 +157,7 @@ class Student(User):
         data = {
             'name': request['name'],
             'email': request['email'],
+            'townhouse': Client.objects.get(id=request['townhouse']),
             'is_active': request.get('is_active', None) is not None
         }
         
@@ -174,14 +179,20 @@ class AttendenceList(models.Model):
         (3, 'Reagendado')
     ]
 
+    def users_likes_default_value():
+        return {'users': []}
+    
+    def enrollments_default_value():
+        return {'users': []}
+
     # enrollment = models.ForeignKey('clients.Enrollment', related_name='enrollment', on_delete=models.CASCADE)
-    date = models.DateTimeField(default=timezone.now())
-    enrollments = models.JSONField(default={'enrollments': []})
+    date = models.DateTimeField(default=timezone.now)
+    enrollments = models.JSONField(default=enrollments_default_value)
     attendence_class = models.ForeignKey('clients.Classes', null=True, related_name='attendence_class', on_delete=models.PROTECT)
     details = models.TextField(blank=True, null=True)
     photo = models.TextField(blank=True, null=True)
     total_likes = models.IntegerField(default=0)
-    likes = models.JSONField(default={'users': []})
+    likes = models.JSONField(default=users_likes_default_value)
     # status = models.IntegerField(choices=ATTENDANCE_STATUS)
 
 
@@ -191,7 +202,7 @@ class AttendenceList(models.Model):
 class Token(models.Model):
     email = models.CharField(max_length=255)
     token = models.CharField(max_length=8)
-    created_at = models.DateField(default=timezone.now())
+    created_at = models.DateField(default=timezone.now)
 
 
 

@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from .serializers import UserSerializer, StudentSerializer, AttendanceSerializer
 from apps.api.clients.serializers import EnrollmentSerializer, ClassSerializer
 from apps.users.models import Student, Teacher, Token, get_random_string, AttendenceList
-from apps.clients.models import Enrollment, Classes
+from apps.clients.models import Enrollment, Classes, Unsubscribe
 from apps.users.auth_wrapper import loggedToApi
 from django.utils.timezone import now
 
@@ -195,15 +195,6 @@ def GetUserByGroup(request):
 
 
 
-def ToPunchIn(request):
-    # start = datetime.strptime(request.data['start'], '%Y-%m-%d').date()
-    # end = datetime.strptime(request.data['end'], '%Y-%m-%d').date()
-    # get_values = AttendenceList.objects.filter(enrollment_class__teacher__id=request.data['id']).values_list()
-    return Response({'list': []})
-
-
-
-
 @api_view(['GET'])
 @loggedToApi
 def ApiClassSubscribe(request, token, id):
@@ -219,3 +210,28 @@ def ApiClassSubscribe(request, token, id):
     
 
     return Response({'error': False, 'is_subscribe': enrollments.count() > 0})
+
+
+
+
+
+@api_view(['POST'])
+@loggedToApi
+def ApiClassUnsubscribe(request, token, id):
+    email = Token.objects.get(token=token).email
+    user = Student.objects.get(email=email)
+
+    enrollment_data = Enrollment.objects.get(id=id)
+
+    data = {
+        'enrollment_class': enrollment_data.enrollment_class,
+        'teacher': enrollment_data.enrollment_class.teacher,
+        'comment': request.data['comment']
+    }
+
+    if request.data['identification']:
+        data['student'] = user
+
+    Unsubscribe.objects.create(**data)
+
+    return Response({'error': False})

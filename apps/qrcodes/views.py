@@ -2,6 +2,7 @@ from django.shortcuts import render
 from apps.users.auth_wrapper import logged
 import qrcode
 from PIL import Image
+from django.conf import settings
 
 
 @logged
@@ -10,7 +11,7 @@ def GenereteQRView(request):
     generate = False
 
     if request.method == 'POST':
-        logo = Image.open('/Users/arthur/Projects/env/HBAdmin/static/assets/images/logo.jpeg')
+        logo = Image.open(settings.BASE_DIR / 'static/assets/images/logo.jpeg')
         basewidth = 100
         wpercent = (basewidth/float(logo.size[0]))
         hsize = int((float(logo.size[1])*float(wpercent)))
