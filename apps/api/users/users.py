@@ -97,7 +97,11 @@ def ApiGetStudent(request, token, id):
 
     result = serializer.data.copy()
     result['score'] = score
-    result['progress'] = round((score / frequency.count()), 1) * 100
+    result['progress'] = 0
+    
+    if score > 0 and frequency.count() > 0:
+        result['progress'] = round((score / frequency.count()), 1) * 100
+
     result['enrollments'] = Enrollment.objects.filter(student__id = id, is_active=True).values('enrollment_class__id', 'enrollment_class__service', 'enrollment_class__schedule', 'enrollment_class__weekday').order_by('-enrollment_class__schedule')
     result['townhouse_classes'] = ClassSerializer(Classes.objects.filter(client__id=result['townhouse'], is_active=True), many=True).data
 
