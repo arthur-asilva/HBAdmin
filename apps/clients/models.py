@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils import timezone
+from datetime import datetime
 
 
 
@@ -99,6 +99,21 @@ class Classes(models.Model):
 
 
 
+class Notice(models.Model):
+
+    def classes_default_value():
+        return {'classes': []}
+
+    notice_class = models.JSONField(default=classes_default_value, null=True)
+    notice_townhouse = models.ForeignKey('clients.Client', null=True, related_name='notice_townhouse', on_delete=models.PROTECT)
+    message = models.TextField(null=True)
+    media_url = models.TextField(null=True)
+    created = models.DateField(default=datetime.now, null=True)
+
+
+
+
+
 class Enrollment(models.Model):
     student = models.ForeignKey('users.Student', null=True, related_name='student', on_delete=models.PROTECT)
     enrollment_class = models.ForeignKey('clients.Classes', null=True, related_name='enrollment_class', on_delete=models.PROTECT)
@@ -113,8 +128,7 @@ class Unsubscribe(models.Model):
     student = models.ForeignKey('users.Student', null=True, related_name='class_student', on_delete=models.PROTECT)
     teacher = models.ForeignKey('users.Teacher', null=True, related_name='class_teacher', on_delete=models.PROTECT)
     comment = models.TextField(null=True)
-    created = models.DateField(default=timezone.now, null=True)
-
+    created = models.DateField(default=datetime.now, null=True)
 
 
 
@@ -127,7 +141,7 @@ class Schedule(models.Model):
     date = models.DateField()
     hour = models.TimeField()
     status = models.BooleanField(default=False)
-    created = models.DateField(default=timezone.now, null=True)
+    created = models.DateField(default=datetime.now, null=True)
 
 
 

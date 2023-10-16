@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils import timezone
+from datetime import datetime
 
 from django.template.loader import get_template
 from django.core.mail import EmailMessage
@@ -27,7 +27,7 @@ class User(models.Model):
     password = models.CharField(max_length=250)
     access_group = models.CharField(max_length=3, choices=ACCESS_GROUPS)
     is_active = models.BooleanField(default=True)
-    created_at = models.DateField(default=timezone.now)
+    created_at = models.DateField(default=datetime.now)
 
     def __str__(self):
         return self.name
@@ -186,7 +186,7 @@ class AttendenceList(models.Model):
         return {'users': []}
 
     # enrollment = models.ForeignKey('clients.Enrollment', related_name='enrollment', on_delete=models.CASCADE)
-    date = models.DateTimeField(default=timezone.now)
+    date = models.DateTimeField(default=datetime.now)
     enrollments = models.JSONField(default=enrollments_default_value)
     attendence_class = models.ForeignKey('clients.Classes', null=True, related_name='attendence_class', on_delete=models.PROTECT)
     details = models.TextField(blank=True, null=True)
@@ -202,7 +202,7 @@ class AttendenceList(models.Model):
 class Token(models.Model):
     email = models.CharField(max_length=255)
     token = models.CharField(max_length=8)
-    created_at = models.DateField(default=timezone.now)
+    created_at = models.DateField(default=datetime.now)
 
 
 
