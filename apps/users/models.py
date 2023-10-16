@@ -185,7 +185,6 @@ class AttendenceList(models.Model):
     def enrollments_default_value():
         return {'users': []}
 
-    # enrollment = models.ForeignKey('clients.Enrollment', related_name='enrollment', on_delete=models.CASCADE)
     date = models.DateTimeField(default=datetime.now)
     enrollments = models.JSONField(default=enrollments_default_value)
     attendence_class = models.ForeignKey('clients.Classes', null=True, related_name='attendence_class', on_delete=models.PROTECT)
@@ -193,7 +192,6 @@ class AttendenceList(models.Model):
     photo = models.TextField(blank=True, null=True)
     total_likes = models.IntegerField(default=0)
     likes = models.JSONField(default=users_likes_default_value)
-    # status = models.IntegerField(choices=ATTENDANCE_STATUS)
 
 
 
