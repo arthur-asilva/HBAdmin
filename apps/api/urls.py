@@ -19,6 +19,7 @@ urlpatterns = [
     path('api/user/<str:token>/attendances/class/<int:id>/', users.ApiLessonsList),
     path('api/user/<str:token>/attendance_like/<int:id>/', users.ApiLessonsLike),
     path('api/user/<str:token>/subscribe/<int:id>/', users.ApiClassSubscribe),
+    path('api/user/<str:token>/notices/<int:id>/', clients.ApiGetNotices),
     path('api/user/<str:token>/unsubscribe/<int:id>/', users.ApiClassUnsubscribe),
     path('api/user/<str:token>/schedule/', clients.ApiAddSchedule),
     path('api/user/<str:token>/schedules/', clients.ApiGetSchedules),

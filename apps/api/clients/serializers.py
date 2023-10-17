@@ -81,3 +81,17 @@ class ServicesSerializer(serializers.ModelSerializer):
                 'id',
                 'name'
             ]
+        
+
+
+class NoticeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Notice
+        fields = [
+            'notice_class',
+            'notice_townhouse',
+            'message',
+            'media_url',
+            'created'
+        ]

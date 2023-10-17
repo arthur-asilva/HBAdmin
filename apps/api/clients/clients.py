@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializers import ClassSerializer, SchedulesSerializer, ServicesSerializer
-from apps.clients.models import Classes, Schedule, Service
+from .serializers import ClassSerializer, SchedulesSerializer, ServicesSerializer, NoticeSerializer
+from apps.clients.models import Classes, Schedule, Service, Notice
 from apps.users.models import Token, Student, Teacher
 from apps.users.auth_wrapper import loggedToApi
 
@@ -52,6 +52,16 @@ def ApiGetSchedules(request, token):
     }
 
     return Response(data)
+
+
+
+
+@api_view(['GET'])
+@loggedToApi
+def ApiGetNotices(request, token, id):
+    user = Student.objects.get(id=id)
+    notices = Notice.objects.filter(notice_townhouse=user.townhouse).order_by('-created')
+    return Response({'error': False, 'data': NoticeSerializer(notices, many=True).data})
 
 
 

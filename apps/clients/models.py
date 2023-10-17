@@ -106,8 +106,8 @@ class Notice(models.Model):
 
     notice_class = models.JSONField(default=classes_default_value, null=True)
     notice_townhouse = models.ForeignKey('clients.Client', null=True, related_name='notice_townhouse', on_delete=models.PROTECT)
-    message = models.TextField(null=True)
-    media_url = models.TextField(null=True)
+    message = models.TextField(blank=True, null=True)
+    media_url = models.TextField(blank=True, null=True)
     created = models.DateField(default=datetime.now, null=True)
 
 
