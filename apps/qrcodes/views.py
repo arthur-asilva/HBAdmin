@@ -23,7 +23,7 @@ def GenereteQRView(request):
         QRimg = QRcode.make_image(fill_color=QRcolor, back_color='white').convert('RGB')
         pos = ((QRimg.size[0] - logo.size[0]) // 2, (QRimg.size[1] - logo.size[1]) // 2)
         QRimg.paste(logo, pos)
-        QRimg.save('./static/last_qr.png')
+        QRimg.save(settings.BASE_DIR / 'static/last_qr.png')
         generate = True
 
 
