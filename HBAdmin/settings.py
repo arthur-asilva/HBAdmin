@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['*']
 
 if platform.system() == 'Linux':
     ALLOWED_HOSTS = PRIVATE_ALLOWED_HOSTS
+    DEBUG = False
 
 
 # Application definition
@@ -138,11 +139,31 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+AWS_ACCESS_KEY_ID = AWS_ACCESS_KEY_ID_PRIVATE
+AWS_SECRET_ACCESS_KEY = AWS_SECRET_ACCESS_KEY_PRIVATE
+AWS_STORAGE_BUCKET_NAME = AWS_STORAGE_BUCKET_NAME_PRIVATE
+AWS_S3_CUSTOM_DOMAIN = AWS_S3_CUSTOM_DOMAIN_PRIVATE
+AWS_S3_OBJECT_PARAMETERS = AWS_S3_OBJECT_PARAMETERS_PRIVATE
+AWS_DEFAULT_ACL = AWS_DEFAULT_ACL_PRIVATE
+
+AWS_LOCATION = AWS_LOCATION_PRIVATE
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+
+STATICFILES_STORAGE = STATICFILES_STORAGE_PRIVATE
+STATIC_URL = STATIC_URL_PRIVATE
+
+
+
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
