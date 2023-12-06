@@ -149,3 +149,6 @@ def StudentsView(request):
 @logged
 def DashView(request):
     return render(request, 'dash.html')
+
+def Privacy(request):
+    return render(request, 'users/privacy.html')
