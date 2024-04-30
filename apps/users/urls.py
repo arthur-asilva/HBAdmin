@@ -9,5 +9,7 @@ urlpatterns = [
     path('teachers/', views.TeachersView, name="teachers_view"),
     path('students/', views.StudentsView, name="students_view"),
     path('administrators/', views.AdminstratorsView, name="administrators_view"),
-    path('privacy/', views.Privacy, name="privacy")
+    path('privacy/', views.Privacy, name="privacy"),
+    path('signup/', views.SignupView, name="signup"),
+    path('signup_finish/', views.SignupFinishView, name="signup_finish"),
 ]

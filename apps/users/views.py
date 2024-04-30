@@ -133,8 +133,8 @@ def StudentsView(request):
 
     if request.method == 'POST':
         request_data = request.POST.copy()
-        request_data['email']: request.POST['email']
-        request_data['townhouse']: Client.objects.get(id=request.POST['townhouse'])
+        request_data['email'] = request.POST['email']
+        request_data['townhouse'] = Client.objects.get(id=request.POST['townhouse'])
         if edit_student:
             Student.update(student.id, request_data)
             return redirect('../students/')
@@ -152,3 +152,25 @@ def DashView(request):
 
 def Privacy(request):
     return render(request, 'users/privacy.html')
+
+def SignupFinishView(request):
+    data ={
+        'name': request.POST['name']
+    }
+    return render(request, 'users/signup_finish.html', data)
+
+def SignupView(request):
+
+    if request.method == 'POST':
+        request_data = request.POST.copy()
+        request_data['email'] = request.POST['email']
+        request_data['townhouse']
+        request_data['password']
+        Student.create(request_data)
+        return SignupFinishView(request)
+
+    data = {
+        'townhouses': Client.objects.all().order_by('name')
+    }
+
+    return render(request, 'users/signup.html', data)

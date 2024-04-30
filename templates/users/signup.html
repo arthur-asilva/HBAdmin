@@ -1,0 +1,125 @@
+{% load static %}
+{% load template_tags %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+    <head>
+        <title>Healthy Body - Criar conta</title>
+        <!-- HTML5 Shim and Respond.js IE11 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 11]>
+            <script src="{% static 'https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js' %}"></script>
+            <script src="{% static 'https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js' %}"></script>
+            <![endif]-->
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="" />
+        <meta name="keywords" content="">
+        <meta name="author" content="Arthur Silva" />
+        <!-- Favicon icon -->
+        <link rel="icon" href="{% static 'assets/images/favicon.ico' %}" type="image/x-icon">
+
+        <!-- vendor css -->
+        <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}" />
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <style type="text/css">
+            body{
+                display: flex;
+                height: 100vh;
+                justify-content: center;
+                align-items: center;
+            }
+            .signup{
+                width: clamp(500px, 60%, 700px);
+            }
+        </style>
+    </head>
+
+    <body class="">
+        <!-- [ Main Content ] start -->
+        <div class="row signup">
+            <div class="col-sm-12">
+                <h3 class="mb-3">Cadastro</h3>
+                <h5>Seja bem-vindo a HB assessoria esportiva!</h5>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="InputName">Nome</label>
+                                        <input type="text" required class="form-control" name="name" id="InputName" placeholder="Nome do aluno">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="InputEmail">E-mail</label>
+                                        <input type="text" required class="form-control" name="email" id="InputEmail" placeholder="E-mail do aluno">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="password">Senha</label>
+                                        <input type="password" required class="form-control" name="password" id="password" placeholder="Digite sua senha">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="passwordConfirm">Confirmar senha</label>
+                                        <input type="password" required class="form-control" name="passwordConfirm" id="passwordConfirm" placeholder="Confirme sua senha">
+                                        <span style="color: #f00; display: none;">As senhas são diferentes</span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="ClientInput">Condomínios</label>
+                                        <select class="form-control" id="ClientInput" name="townhouse">
+                                            {% for townhouse in townhouses %}
+                                                <option value="{{townhouse.id}}">{{townhouse.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="custom-control custom-switch mb-3">
+                                        <input type="checkbox" {% if edit_student and not student.is_active %}{% else %}checked{% endif %} name="is_active" class="custom-control-input" id="customswitch1">
+                                        <label class="custom-control-label" for="customswitch1">Ativo</label>
+                                    </div>
+
+                                    <a class="text-danger" style="margin-right: 30px" href="http://hbassesp.com">Cancelar</a>
+
+                                    <button id="send" type="submit" disabled="true" class="btn btn-primary">Adicionar</button>
+                                    
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Required Js -->
+        <script src="{% static 'assets/js/vendor-all.min.js' %}"></script>
+        <script src="{% static 'assets/js/plugins/bootstrap.min.js' %}"></script>
+        <script src="{% static 'assets/js/pcoded.min.js' %}"></script>
+        <script type="text/javascript">
+            const pass_input = document.querySelector('input[name=password]')
+            const pass_input_confirm = document.querySelector('input[name=passwordConfirm]')
+            const send = document.querySelector('#send')
+
+            pass_input_confirm.addEventListener('keyup', (e) => {
+                const label = document.querySelector('input[name=passwordConfirm]~span')
+                if(pass_input.value != e.target.value){
+                    label.style.display = 'block';
+                    send.disabled = true
+                } else {
+                    label.style.display = 'none';
+                    send.disabled = false
+                }
+            })
+        </script>
+
+    </body>
+
+</html>
