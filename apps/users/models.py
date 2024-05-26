@@ -139,11 +139,13 @@ class Student(User):
     @classmethod
     def create(cls, request):
 
+        password = request.get('password', get_random_string(6))
+
         data = {
             'name': request['name'],
             'email': request['email'],
             'townhouse': Client.objects.get(id=request['townhouse']),
-            'password': get_random_string(6),
+            'password': password,
             'access_group': 'ALU',
             'is_active': request.get('is_active', None) is not None
         }
